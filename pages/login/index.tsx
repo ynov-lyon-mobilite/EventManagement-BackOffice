@@ -29,7 +29,7 @@ export default function Login(){
             <form onSubmit={handleLogin} className={styles.loginSubcontainer}>
                 <Card sx={{ minWidth: 275 }} elevation={10}>
                     <CardContent>
-                        <Typography gutterBottom variant="h5" component="div" className="text-center">
+                        <Typography gutterBottom variant="h5" component="div" className="text-center" color="primary">
                             Connexion
                         </Typography>
                         <div className="mt-2">

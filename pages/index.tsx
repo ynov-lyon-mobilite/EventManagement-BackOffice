@@ -1,14 +1,18 @@
 import Layout from "../components/layout/Layout";
-import {useContext} from "react";
+import {useContext, useEffect} from "react";
 import {UserContext} from "../context/UserContext";
 import Login from "./login";
+import {useRouter} from "next/router";
 
 export default function Home() {
-    const {user} = useContext(UserContext);
+    const {user, fetching} = useContext(UserContext);
+    const router = useRouter();
 
-    if(!user){
-        return (<Login/>);
-    }
+    useEffect(() => {
+        if(!user && !fetching){
+            router.push({pathname: '/login'});
+        }
+    }, [user])
 
     return (
         <Layout>
