@@ -1,0 +1,11 @@
+.loginContainer{
+    height:100vh;
+    display:flex;
+    background-image: url('/wall-paper.jpg');
+    background-position: center;
+    background-size: cover ;
+}
+
+.loginSubcontainer{
+    margin:auto;
+}
