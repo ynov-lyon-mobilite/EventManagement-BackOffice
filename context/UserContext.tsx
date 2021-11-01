@@ -5,11 +5,11 @@ export const UserContext = React.createContext(null);
 
 export default function UserContextProvider({children}: PropsWithChildren<any>){
     const [user, setUser] = useState(null);
-    const [fetching, setFetching] = useState(true);
+    const [fetching, setFetching] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
-            setUser({email: 'test@test.com'})
+            /*setUser({email: 'test@test.com'})*/
             setFetching(false);
         }, 3000)
     }, []);
