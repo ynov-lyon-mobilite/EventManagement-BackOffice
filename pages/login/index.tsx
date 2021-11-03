@@ -7,21 +7,31 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
+import { useRouter } from "next/router";
 
 export default function Login() {
-  const { setUser } = useContext(UserContext);
+  const { login } = useContext(UserContext);
+  const router = useRouter();
   const [connecting, setConnecting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const handleLogin = (e) => {
     e.preventDefault();
     setConnecting(true);
-    console.log(`login with email : ${email} | password : ${password}`);
-    setTimeout(() => {
-      setConnecting(false);
-      setUser({ email: email });
-    }, 2000);
+    setError(null);
+    login(email, password)
+      .then(() => {
+        router.push({ pathname: "/" });
+      })
+      .catch(error => {
+        console.error(error);
+        setError(error.toString());
+      })
+      .finally(() => {
+        setConnecting(false);
+      });
   };
 
   return (
@@ -41,6 +51,7 @@ export default function Login() {
             <div className="mt-2">
               <TextField
                 required
+                autoFocus
                 type="email"
                 id="outlined-basic"
                 label="Email"
@@ -66,6 +77,11 @@ export default function Login() {
                 }}
               />
             </div>
+            {error && (
+                <div className="mt-2 error">
+                  {error}
+                </div>
+            )}
           </CardContent>
           <CardActions className="d-flex justify-center">
             <LoadingButton

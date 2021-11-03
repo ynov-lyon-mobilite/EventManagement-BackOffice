@@ -3,20 +3,19 @@ import { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { useRouter } from "next/router";
 import Unauthorized from "../components/error/403";
+import Link from "next/link";
 
 export default function Home() {
-  const { user, fetching } = useContext(UserContext);
-  const router = useRouter();
+  const { user, loading } = useContext(UserContext);
 
-  useEffect(() => {
-    if (!user && !fetching) {
-      router.push({ pathname: "/login" });
-    }
-  }, [user]);
-
-  if (!user && !fetching) {
+  if (!user && !loading) {
     return <Unauthorized />;
   }
 
-  return <Layout>welcome</Layout>;
+  return (
+      <Layout>
+        <div>welcome</div>
+        <Link href="/home">home</Link>
+      </Layout>
+  );
 }

@@ -9,6 +9,3 @@ generates:
     config:
       skipTypeNameForRoot: true
       skipTypename: true
-    hooks:
-      afterOneFileWrite:
-        - npx prettier --write .
