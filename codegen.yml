@@ -1,0 +1,14 @@
+overwrite: true
+schema: "https://yvent-api.herokuapp.com/api/graphql"
+documents: "./**/!(*.d).{ts,tsx}"
+generates:
+  src/__graphql__/__generated__.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+    config:
+      skipTypeNameForRoot: true
+      skipTypename: true
+    hooks:
+      afterOneFileWrite:
+        - npx prettier --write .

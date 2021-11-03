@@ -1,17 +1,16 @@
-.baseError{
-    width: 100vw;
-    height: 100vh;
-    display: flex;
+.baseError {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
 }
-.baseErrorContent{
-    margin: auto;
-    justify-content: center;
-    text-align: center;
+.baseErrorContent {
+  margin: auto;
+  justify-content: center;
+  text-align: center;
 }
-.baseErrorCode{
-    font-size: 4em;
-    font-weight: bold;
+.baseErrorCode {
+  font-size: 4em;
+  font-weight: bold;
 }
-.baseErrorText{
-
+.baseErrorText {
 }
