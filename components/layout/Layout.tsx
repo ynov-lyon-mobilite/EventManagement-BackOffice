@@ -8,6 +8,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import HomeIcon from '@mui/icons-material/Home';
 import EventIcon from '@mui/icons-material/Event';
 import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import ListItemText from '@mui/material/ListItemText';
@@ -18,6 +19,7 @@ import Typography from '@mui/material/Typography';
 import {PropsWithChildren, useContext, useState} from "react";
 import Link from "next/link";
 import {UserContext} from "../../context/UserContext";
+import {useRouter} from "next/router";
 
 const drawerWidth = 240;
 
@@ -28,9 +30,14 @@ interface Props {
 export default function Layout({ children, window }: PropsWithChildren<Props>) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const {logout} = useContext(UserContext);
+    const router = useRouter();
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
+    };
+
+    const goTo = (href: string) => {
+        router.push(href);
     };
 
     const drawer = (
@@ -38,13 +45,19 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
             <Toolbar />
             <Divider />
             <List>
-                <ListItem button key="events">
+                <ListItem button key="home" onClick={() => {goTo('/')}}>
+                    <ListItemIcon>
+                        <HomeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Accueil" />
+                </ListItem>
+                <ListItem button key="events" onClick={() => {goTo('/events')}}>
                     <ListItemIcon>
                         <EventIcon />
                     </ListItemIcon>
                     <ListItemText primary="Evènements" />
                 </ListItem>
-                <ListItem button key="bookings">
+                <ListItem button key="bookings" onClick={() => {goTo('/bookings')}}>
                     <ListItemIcon>
                         <BookmarkAddIcon />
                     </ListItemIcon>
@@ -53,7 +66,7 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
             </List>
             <Divider />
             <List>
-                <ListItem button key="profile">
+                <ListItem button key="profile" onClick={() => {goTo('/profile')}}>
                     <ListItemIcon>
                         <AccountCircleIcon />
                     </ListItemIcon>

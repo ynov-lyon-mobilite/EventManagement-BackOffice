@@ -15,7 +15,6 @@ export default function Home() {
   return (
       <Layout>
         <div>welcome</div>
-        <Link href="/home">home</Link>
       </Layout>
   );
 }
