@@ -35,7 +35,7 @@ const LOGIN_USER = gql`
 `;
 
 export default function Login() {
-  const { refetch } = useContext(UserContext);
+  const { user, loading: loadingUser, refetch } = useContext(UserContext);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,6 +53,12 @@ export default function Login() {
       });
     }
   }, [data]);
+
+  useEffect(() => {
+    if (!loadingUser && user) {
+      router.push("/");
+    }
+  }, [loadingUser, user]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

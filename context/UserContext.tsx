@@ -32,10 +32,8 @@ export default function UserContextProvider({
   const [user, setUser] = useState<FetchCurrentUserQuery["user_infos"] | null>(
     null
   );
-  const { loading, error, data, refetch } =
-    useQuery<FetchCurrentUserQuery>(FETCH_USER);
-
-  useLog(data);
+  const { loading, error, data, refetch } = useQuery<FetchCurrentUserQuery>(FETCH_USER,
+      {fetchPolicy: 'network-only', notifyOnNetworkStatusChange: true});
 
   useEffect(() => {
     if (!loading && !!error) {
@@ -49,16 +47,15 @@ export default function UserContextProvider({
     }
   }, [data]);
 
-  const logout = () => {
-    setUser(null);
+  const logout = async () => {
     localStorage.removeItem("jwt-auth");
-    refetch();
+    setUser(null);
   };
 
   return (
     <UserContext.Provider
       value={{
-        user: data?.user_infos,
+        user,
         logout,
         refetch,
         loading,
@@ -73,9 +70,7 @@ export default function UserContextProvider({
         </div>
       ) : user || router.pathname.includes("login") ? (
         children
-      ) : (
-        <Unauthorized />
-      )}
+      ) : null}
     </UserContext.Provider>
   );
 }
