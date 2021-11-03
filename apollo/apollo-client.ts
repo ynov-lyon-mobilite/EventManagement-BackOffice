@@ -17,7 +17,6 @@ const authLink = setContext((_, { headers }) => {
   // return the headers to the context so httpLink can read them
 
   const token = getToken();
-  console.log("Token", token);
 
   return {
     headers: {
