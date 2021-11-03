@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import LoadingButton from "@mui/lab/LoadingButton";
 import styles from "../../styles/Login.module.css";
@@ -8,30 +8,55 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
 import { useRouter } from "next/router";
+import { gql, useMutation } from "@apollo/client";
+import {
+  LoginMutation,
+  LoginMutationVariables,
+} from "../../src/__graphql__/__generated__";
+
+import { storeToken } from "../../apollo/apollo-client";
+
+const LOGIN_USER = gql`
+  mutation Login($password: String!, $email: String!) {
+    loggedUser: login(password: $password, email: $email) {
+      user {
+        displayName
+        email
+        joinedEvents {
+          title
+        }
+        roles
+        username
+        uuid
+      }
+      jwt
+    }
+  }
+`;
 
 export default function Login() {
-  const { login } = useContext(UserContext);
+  const { refetch } = useContext(UserContext);
   const router = useRouter();
-  const [connecting, setConnecting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setConnecting(true);
-    setError(null);
-    login(email, password)
-      .then(() => {
-        router.push({ pathname: "/" });
-      })
-      .catch(error => {
-        console.error(error);
-        setError(error.toString());
-      })
-      .finally(() => {
-        setConnecting(false);
+  const [loginUser, { data, loading, error }] = useMutation<
+    LoginMutation,
+    LoginMutationVariables
+  >(LOGIN_USER);
+
+  useEffect(() => {
+    if (data) {
+      storeToken(data.loggedUser.jwt);
+      refetch().then(() => {
+        router.push("/");
       });
+    }
+  }, [data]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    await loginUser({ variables: { email, password } }).catch(console.error);
   };
 
   return (
@@ -53,7 +78,6 @@ export default function Login() {
                 required
                 autoFocus
                 type="email"
-                id="outlined-basic"
                 label="Email"
                 variant="outlined"
                 className="w-full"
@@ -67,7 +91,6 @@ export default function Login() {
               <TextField
                 required
                 type="password"
-                id="outlined-basic"
                 label="Mot de passe"
                 variant="outlined"
                 className="w-full"
@@ -77,16 +100,12 @@ export default function Login() {
                 }}
               />
             </div>
-            {error && (
-                <div className="mt-2 error">
-                  {error}
-                </div>
-            )}
+            {error && <div className="mt-2 error">{error.message}</div>}
           </CardContent>
           <CardActions className="d-flex justify-center">
             <LoadingButton
-              disabled={connecting}
-              loading={connecting}
+              disabled={loading}
+              loading={loading}
               type="submit"
               variant="contained"
             >
