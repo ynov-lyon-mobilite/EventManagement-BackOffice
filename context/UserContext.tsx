@@ -1,10 +1,14 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import { useQuery, gql, ApolloQueryResult } from "@apollo/client";
-import { FetchCurrentUserQuery } from "../src/__graphql__/__generated__";
-import { useLog } from "../hooks/useLog";
+import { useQuery, gql, ApolloQueryResult, useMutation } from "@apollo/client";
+import {
+  FetchCurrentUserQuery,
+  LoginMutation,
+  LoginMutationVariables,
+} from "../src/__graphql__/__generated__";
 import { useRouter } from "next/router";
-import Unauthorized from "../components/error/403";
+import { deleteToken, storeToken } from "../apollo/apollo-client";
+import { useLog } from "../hooks/useLog";
 
 export const UserContext = React.createContext<UserContextType>(undefined);
 
@@ -18,10 +22,28 @@ const FETCH_USER = gql`
   }
 `;
 
+const LOGIN_USER = gql`
+  mutation Login($password: String!, $email: String!) {
+    loggedUser: login(password: $password, email: $email) {
+      user {
+        displayName
+        email
+        joinedEvents {
+          title
+        }
+        roles
+        username
+        uuid
+      }
+      jwt
+    }
+  }
+`;
+
 type UserContextType = {
-  user: FetchCurrentUserQuery["user_infos"] | undefined;
+  user: FetchCurrentUserQuery["user_infos"] | null;
   logout: () => void;
-  refetch: () => Promise<ApolloQueryResult<FetchCurrentUserQuery>>;
+  login: (email: string, password: string) => Promise<void>;
   loading: boolean;
 };
 
@@ -32,23 +54,34 @@ export default function UserContextProvider({
   const [user, setUser] = useState<FetchCurrentUserQuery["user_infos"] | null>(
     null
   );
-  const { loading, error, data, refetch } = useQuery<FetchCurrentUserQuery>(FETCH_USER,
-      {fetchPolicy: 'network-only', notifyOnNetworkStatusChange: true});
+  const [loading, setLoading] = useState(true);
+  const { data: loggedUser } = useQuery<FetchCurrentUserQuery>(FETCH_USER);
 
   useEffect(() => {
-    if (!loading && !!error) {
+    if (!loading && !user) {
       router.push("/login");
     }
-  }, [loading, error]);
+  }, [loading, user]);
 
   useEffect(() => {
-    if (data) {
-      setUser(data.user_infos);
+    if (loggedUser) {
+      setUser(loggedUser.user_infos);
+      setLoading(false);
     }
-  }, [data]);
+  }, [loggedUser]);
 
-  const logout = async () => {
-    localStorage.removeItem("jwt-auth");
+  const [loginUser] = useMutation<LoginMutation, LoginMutationVariables>(
+    LOGIN_USER
+  );
+
+  const login = async (email: string, password: string) => {
+    const { data } = await loginUser({ variables: { email, password } });
+    storeToken(data.loggedUser.jwt);
+    setUser(data.loggedUser.user);
+  };
+
+  const logout = () => {
+    deleteToken();
     setUser(null);
   };
 
@@ -56,8 +89,8 @@ export default function UserContextProvider({
     <UserContext.Provider
       value={{
         user,
+        login,
         logout,
-        refetch,
         loading,
       }}
     >

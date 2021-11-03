@@ -8,51 +8,13 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
 import { useRouter } from "next/router";
-import { gql, useMutation } from "@apollo/client";
-import {
-  LoginMutation,
-  LoginMutationVariables,
-} from "../../src/__graphql__/__generated__";
-
-import { storeToken } from "../../apollo/apollo-client";
-
-const LOGIN_USER = gql`
-  mutation Login($password: String!, $email: String!) {
-    loggedUser: login(password: $password, email: $email) {
-      user {
-        displayName
-        email
-        joinedEvents {
-          title
-        }
-        roles
-        username
-        uuid
-      }
-      jwt
-    }
-  }
-`;
 
 export default function Login() {
-  const { user, loading: loadingUser, refetch } = useContext(UserContext);
+  const { user, loading: loadingUser, login } = useContext(UserContext);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [loginUser, { data, loading, error }] = useMutation<
-    LoginMutation,
-    LoginMutationVariables
-  >(LOGIN_USER);
-
-  useEffect(() => {
-    if (data) {
-      storeToken(data.loggedUser.jwt);
-      refetch().then(() => {
-        router.push("/");
-      });
-    }
-  }, [data]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!loadingUser && user) {
@@ -61,8 +23,10 @@ export default function Login() {
   }, [loadingUser, user]);
 
   const handleLogin = async (e) => {
+    setLoading(true);
     e.preventDefault();
-    await loginUser({ variables: { email, password } }).catch(console.error);
+    await login(email, password);
+    setLoading(false);
   };
 
   return (
@@ -106,7 +70,7 @@ export default function Login() {
                 }}
               />
             </div>
-            {error && <div className="mt-2 error">{error.message}</div>}
+            {/* {error && <div className="mt-2 error">{error.message}</div>} */}
           </CardContent>
           <CardActions className="d-flex justify-center">
             <LoadingButton
