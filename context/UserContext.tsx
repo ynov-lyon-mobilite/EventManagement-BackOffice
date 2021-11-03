@@ -55,7 +55,8 @@ export default function UserContextProvider({
     null
   );
   const [loading, setLoading] = useState(true);
-  const { data: loggedUser } = useQuery<FetchCurrentUserQuery>(FETCH_USER);
+  const { data: loggedUser, error } =
+    useQuery<FetchCurrentUserQuery>(FETCH_USER);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -69,6 +70,12 @@ export default function UserContextProvider({
       setLoading(false);
     }
   }, [loggedUser]);
+
+  useEffect(() => {
+    if (!!error) {
+      setLoading(false);
+    }
+  }, [error]);
 
   const [loginUser] = useMutation<LoginMutation, LoginMutationVariables>(
     LOGIN_USER
