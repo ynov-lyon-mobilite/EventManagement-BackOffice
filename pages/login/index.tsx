@@ -15,6 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!loadingUser && user) {
@@ -24,8 +25,14 @@ export default function Login() {
 
   const handleLogin = async (e) => {
     setLoading(true);
+    setError(null);
     e.preventDefault();
-    await login(email, password);
+    try{
+      await login(email, password);
+    }catch(e){
+      console.log(e);
+      setError(e.message ?? e.toString());
+    }
     setLoading(false);
   };
 
@@ -70,7 +77,7 @@ export default function Login() {
                 }}
               />
             </div>
-            {/* {error && <div className="mt-2 error">{error.message}</div>} */}
+            {error && <div className="mt-2 error">{error}</div>}
           </CardContent>
           <CardActions className="d-flex justify-center">
             <LoadingButton

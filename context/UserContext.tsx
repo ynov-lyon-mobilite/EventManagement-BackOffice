@@ -51,12 +51,9 @@ export default function UserContextProvider({
   children,
 }: PropsWithChildren<any>) {
   const router = useRouter();
-  const [user, setUser] = useState<FetchCurrentUserQuery["user_infos"] | null>(
-    null
-  );
+  const [user, setUser] = useState<FetchCurrentUserQuery["user_infos"] | null>(null);
   const [loading, setLoading] = useState(true);
-  const { data: loggedUser, error } =
-    useQuery<FetchCurrentUserQuery>(FETCH_USER);
+  const { data: loggedUser, error } = useQuery<FetchCurrentUserQuery>(FETCH_USER);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -82,9 +79,9 @@ export default function UserContextProvider({
   );
 
   const login = async (email: string, password: string) => {
-    const { data } = await loginUser({ variables: { email, password } });
-    storeToken(data.loggedUser.jwt);
-    setUser(data.loggedUser.user);
+      const { data } = await loginUser({ variables: { email, password } });
+      storeToken(data.loggedUser.jwt);
+      setUser(data.loggedUser.user);
   };
 
   const logout = () => {
