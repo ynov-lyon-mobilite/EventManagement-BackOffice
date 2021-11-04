@@ -4,6 +4,7 @@ import { UserContext } from "../context/UserContext";
 import { useRouter } from "next/router";
 import Unauthorized from "../components/error/403";
 import Link from "next/link";
+import {NextSeo} from "next-seo";
 
 export default function Home() {
   const { user, loading } = useContext(UserContext);
@@ -14,7 +15,11 @@ export default function Home() {
 
   return (
       <Layout>
-        <div>welcome</div>
+          <NextSeo
+              title="Accueil"
+              description="Page d'accueil du back-office Yvent"
+          />
+          Bienvenue
       </Layout>
   );
 }

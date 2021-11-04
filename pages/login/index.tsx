@@ -8,6 +8,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
 import { useRouter } from "next/router";
+import {NextSeo} from "next-seo";
 
 export default function Login() {
   const { user, loading: loadingUser, login } = useContext(UserContext);
@@ -38,6 +39,10 @@ export default function Login() {
 
   return (
     <div className={styles.loginContainer}>
+      <NextSeo
+          title="Yvent - Connexion"
+          description="Page de connexion du back-office Yvent"
+      />
       <form onSubmit={handleLogin} className={styles.loginSubcontainer}>
         <Card sx={{ minWidth: 275 }} elevation={10}>
           <CardContent>
