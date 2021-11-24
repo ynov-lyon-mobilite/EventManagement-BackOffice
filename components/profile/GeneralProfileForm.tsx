@@ -1,5 +1,5 @@
 import {Button, InputAdornment, TextField} from "@mui/material";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../context/UserContext";
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -7,8 +7,8 @@ import PersonIcon from '@mui/icons-material/Person';
 import _ from 'lodash';
 import {LoadingButton} from "@mui/lab";
 
-export default function GeneralProfileForm() {
-    const {user} = useContext(UserContext);
+export default function GeneralProfileForm({ showAlert = (text: string) => {} }) {
+    const {user, updateUser} = useContext(UserContext);
     const initialUserState = {
         username: user.username,
         email: user.email,
@@ -16,14 +16,25 @@ export default function GeneralProfileForm() {
     };
     const [newProfile, setNewProfile] = useState(initialUserState);
     const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handleSubmit = (e) => {
+    useEffect(() => {handleReset()}, [user])
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(newProfile);
         setSubmitting(true);
+        setError(null);
+        try{
+            await updateUser(newProfile.displayName, newProfile.email, newProfile.username);
+        }catch(e){
+            console.error(e);
+            setError(e.message ?? e.toString());
+        }
+        setSubmitting(false);
+        showAlert("Modifications du profil enregistrées");
     };
 
-    const handleReset = (e) => {
+    const handleReset = () => {
         setNewProfile(initialUserState);
     }
 
@@ -82,6 +93,7 @@ export default function GeneralProfileForm() {
                     onChange={(e) => {setNewProfile(prev => ({...prev, username: e.target.value}))}}
                 />
             </div>
+            {error && <div className="mt-2 error">{error}</div>}
             <div className="mt-2">
                 <LoadingButton
                     loading={submitting}
@@ -90,7 +102,6 @@ export default function GeneralProfileForm() {
                     className="font-bold"
                     disabled={isSameObject}
                 >Enregistrer</LoadingButton>
-
                 {!isSameObject && <Button className="font-bold ml-2" onClick={handleReset}>Annuler</Button>}
             </div>
         </form>

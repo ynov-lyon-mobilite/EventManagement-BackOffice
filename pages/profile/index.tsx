@@ -1,11 +1,13 @@
 import Layout from "../../components/layout/Layout";
-import {ReactNode, SyntheticEvent, useContext, useState} from "react";
+import {ReactNode, SyntheticEvent, useContext, useEffect, useState} from "react";
 import {UserContext} from "../../context/UserContext";
 import {NextSeo} from "next-seo";
-import {Box, Tab, Tabs, Typography} from "@mui/material";
+import {Alert, Box, Collapse, IconButton, Tab, Tabs, Typography} from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import GeneralProfileForm from "../../components/profile/GeneralProfileForm";
+import CloseIcon from '@mui/icons-material/Close';
+import ProgressLinear from "../../components/progress/ProgressLinear";
 
 function a11yProps(index: number) {
     return {
@@ -17,10 +19,26 @@ function a11yProps(index: number) {
 export default function Profile() {
     const {user} = useContext(UserContext);
     const [value, setValue] = useState(0);
+    const [openAlert, setOpenAlert] = useState(false);
+    const [alertText, setAlertText] = useState("Opération effectuée");
+    const alertTimeOut = 3000;
 
     const handleChange = (event: SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+
+    const showAlert = (text?: string) => {
+        if(!!text){
+            setAlertText(text);
+        }
+        setOpenAlert(true);
+    };
+
+    useEffect(() => {
+        if(!!openAlert){
+            setTimeout(() => {setOpenAlert(false)}, alertTimeOut+500)
+        }
+    },[openAlert])
 
     return (
         <Layout>
@@ -37,12 +55,30 @@ export default function Profile() {
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
-                    <GeneralProfileForm/>
+                    <GeneralProfileForm showAlert={showAlert}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
                     mdp
                 </TabPanel>
             </Box>
+            <Collapse in={openAlert}>
+                {openAlert && <ProgressLinear timeout={alertTimeOut}/>}
+                <Alert
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {setOpenAlert(false);}}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                    sx={{ mb: 2 }}
+                >
+                    {alertText}
+                </Alert>
+            </Collapse>
         </Layout>
     );
 }

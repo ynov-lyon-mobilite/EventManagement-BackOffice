@@ -193,10 +193,10 @@ export type Success = {
 
 export type User = {
   displayName: Scalars['String'];
-  email?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
   joinedEvents: Array<Event>;
   roles: Array<Role>;
-  username?: Maybe<Scalars['String']>;
+  username: Scalars['String'];
   uuid: Scalars['String'];
 };
 
@@ -219,7 +219,7 @@ export type UserNode = {
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FetchCurrentUserQuery = { user_infos: { displayName: string, email?: string | null | undefined, username?: string | null | undefined } };
+export type FetchCurrentUserQuery = { user_infos: { displayName: string, email: string, username: string, uuid: string } };
 
 export type LoginMutationVariables = Exact<{
   password: Scalars['String'];
@@ -227,4 +227,14 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { loggedUser: { jwt: string, user: { displayName: string, email?: string | null | undefined, roles: Array<Role>, username?: string | null | undefined, uuid: string, joinedEvents: Array<{ title: string }> } } };
+export type LoginMutation = { loggedUser: { jwt: string, user: { displayName: string, email: string, roles: Array<Role>, username: string, uuid: string, joinedEvents: Array<{ title: string }> } } };
+
+export type UpdateMainUserMutationVariables = Exact<{
+  displayName: Scalars['String'];
+  username?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  uuid: Scalars['String'];
+}>;
+
+
+export type UpdateMainUserMutation = { updateUser: { uuid: string } };

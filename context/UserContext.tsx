@@ -1,14 +1,13 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import { useQuery, gql, ApolloQueryResult, useMutation } from "@apollo/client";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import {
   FetchCurrentUserQuery,
   LoginMutation,
-  LoginMutationVariables,
+  LoginMutationVariables, UpdateMainUserMutation, UpdateMainUserMutationVariables,
 } from "../src/__graphql__/__generated__";
 import { useRouter } from "next/router";
 import { deleteToken, storeToken } from "../apollo/apollo-client";
-import { useLog } from "../hooks/useLog";
 
 export const UserContext = React.createContext<UserContextType>(undefined);
 
@@ -18,6 +17,7 @@ const FETCH_USER = gql`
       displayName
       email
       username
+      uuid
     }
   }
 `;
@@ -40,11 +40,20 @@ const LOGIN_USER = gql`
   }
 `;
 
+const UPDATE_MAIN_USER = gql`
+  mutation updateMainUser($displayName: String!, $username: String, $email: String, $uuid: String!){
+    updateUser(displayName: $displayName, email: $email, username: $username, uuid: $uuid){
+      uuid
+    }
+  }
+`;
+
 type UserContextType = {
   user: FetchCurrentUserQuery["user_infos"] | null;
   logout: () => void;
   login: (email: string, password: string) => Promise<void>;
   loading: boolean;
+  updateUser: (displayName: string, email:string, username:string) => Promise<void>
 };
 
 export default function UserContextProvider({
@@ -54,6 +63,8 @@ export default function UserContextProvider({
   const [user, setUser] = useState<FetchCurrentUserQuery["user_infos"] | null>(null);
   const [loading, setLoading] = useState(true);
   const { data: loggedUser, error } = useQuery<FetchCurrentUserQuery>(FETCH_USER);
+  const [updateMainUser] = useMutation<UpdateMainUserMutation, UpdateMainUserMutationVariables>(UPDATE_MAIN_USER);
+  const [loginUser] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_USER);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -74,14 +85,15 @@ export default function UserContextProvider({
     }
   }, [error]);
 
-  const [loginUser] = useMutation<LoginMutation, LoginMutationVariables>(
-    LOGIN_USER
-  );
-
   const login = async (email: string, password: string) => {
       const { data } = await loginUser({ variables: { email, password } });
       storeToken(data.loggedUser.jwt);
       setUser(data.loggedUser.user);
+  };
+
+  const updateUser = async (displayName: string, email:string, username:string) => {
+    const { data } = await updateMainUser({ variables: { displayName, email, username, uuid: user.uuid  } });
+      setUser(prev => ({...prev, displayName: displayName, username: username, email: email}));
   };
 
   const logout = () => {
@@ -96,6 +108,7 @@ export default function UserContextProvider({
         login,
         logout,
         loading,
+        updateUser
       }}
     >
       {loading ? (
