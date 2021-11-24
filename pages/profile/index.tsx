@@ -8,6 +8,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import GeneralProfileForm from "../../components/profile/GeneralProfileForm";
 import CloseIcon from '@mui/icons-material/Close';
 import ProgressLinear from "../../components/progress/ProgressLinear";
+import PasswordForm from "../../components/profile/PasswordForm";
 
 function a11yProps(index: number) {
     return {
@@ -58,7 +59,7 @@ export default function Profile() {
                     <GeneralProfileForm showAlert={showAlert}/>
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    mdp
+                    <PasswordForm showAlert={showAlert}/>
                 </TabPanel>
             </Box>
             <Collapse in={openAlert}>

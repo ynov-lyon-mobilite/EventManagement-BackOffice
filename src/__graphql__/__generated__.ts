@@ -13,6 +13,15 @@ export type Scalars = {
   Date: any;
 };
 
+export type Booking = {
+  event: Event;
+  price?: Maybe<Scalars['Float']>;
+  refunded: Scalars['Boolean'];
+  refundedAt?: Maybe<Scalars['Date']>;
+  user: User;
+  uuid: Scalars['String'];
+};
+
 export type Cursor = {
   current?: Maybe<Scalars['CursorID']>;
   take: Scalars['Int'];
@@ -24,7 +33,8 @@ export type Event = {
   description?: Maybe<Scalars['String']>;
   endDate: Scalars['Date'];
   participants: UserConnection;
-  price: Scalars['Float'];
+  participantsCount: Scalars['Int'];
+  prices: Array<Price>;
   startDate: Scalars['Date'];
   title: Scalars['String'];
 };
@@ -38,6 +48,7 @@ export type EventParticipantsArgs = {
 };
 
 export type EventCategory = {
+  isActive: Scalars['Boolean'];
   name: Scalars['String'];
   uuid: Scalars['String'];
 };
@@ -54,8 +65,11 @@ export type EventNode = {
 };
 
 export type Mutation = {
+  createBooking: Booking;
   createEvent: Event;
+  createEventCategory: EventCategory;
   deleteEvent: Event;
+  deleteEventCategory: EventCategory;
   deleteUser: User;
   /**
    * Pay to join the event
@@ -64,8 +78,15 @@ export type Mutation = {
   joinEvent: Event;
   login: UserAuth;
   register: UserAuth;
+  restoreEventCategory: EventCategory;
   updateEvent: Event;
+  updateEventCategory: EventCategory;
   updateUser: User;
+};
+
+
+export type MutationCreateBookingArgs = {
+  eventPriceUuid: Scalars['String'];
 };
 
 
@@ -79,7 +100,17 @@ export type MutationCreateEventArgs = {
 };
 
 
+export type MutationCreateEventCategoryArgs = {
+  name: Scalars['String'];
+};
+
+
 export type MutationDeleteEventArgs = {
+  uuid: Scalars['String'];
+};
+
+
+export type MutationDeleteEventCategoryArgs = {
   uuid: Scalars['String'];
 };
 
@@ -107,19 +138,29 @@ export type MutationRegisterArgs = {
 };
 
 
+export type MutationRestoreEventCategoryArgs = {
+  uuid: Scalars['String'];
+};
+
+
 export type MutationUpdateEventArgs = {
   categoriesUuid?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
-  price?: Maybe<Scalars['Float']>;
   startDate?: Maybe<Scalars['Date']>;
   title?: Maybe<Scalars['String']>;
   uuid: Scalars['String'];
 };
 
 
+export type MutationUpdateEventCategoryArgs = {
+  name: Scalars['String'];
+  uuid: Scalars['String'];
+};
+
+
 export type MutationUpdateUserArgs = {
-  displayName: Scalars['String'];
+  displayName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Role>>;
@@ -132,6 +173,12 @@ export type PageInfo = {
   hasNextPage: Scalars['Boolean'];
   hasPreviousPage: Scalars['Boolean'];
   totalPages: Scalars['Int'];
+};
+
+export type Price = {
+  description: Scalars['String'];
+  price: Scalars['Float'];
+  uuid: Scalars['String'];
 };
 
 export type Query = {
@@ -192,11 +239,11 @@ export type Success = {
 };
 
 export type User = {
+  bookings: Array<Booking>;
   displayName: Scalars['String'];
   email: Scalars['String'];
   joinedEvents: Array<Event>;
   roles: Array<Role>;
-  username: Scalars['String'];
   uuid: Scalars['String'];
 };
 
@@ -219,7 +266,7 @@ export type UserNode = {
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type FetchCurrentUserQuery = { user_infos: { displayName: string, email: string, username: string, uuid: string } };
+export type FetchCurrentUserQuery = { user_infos: { displayName: string, email: string, uuid: string } };
 
 export type LoginMutationVariables = Exact<{
   password: Scalars['String'];
@@ -227,12 +274,12 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { loggedUser: { jwt: string, user: { displayName: string, email: string, roles: Array<Role>, username: string, uuid: string, joinedEvents: Array<{ title: string }> } } };
+export type LoginMutation = { loggedUser: { jwt: string, user: { displayName: string, email: string, roles: Array<Role>, uuid: string, joinedEvents: Array<{ title: string }> } } };
 
 export type UpdateMainUserMutationVariables = Exact<{
-  displayName: Scalars['String'];
-  username?: Maybe<Scalars['String']>;
+  displayName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
   uuid: Scalars['String'];
 }>;
 

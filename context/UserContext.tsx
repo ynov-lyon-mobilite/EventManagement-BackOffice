@@ -16,7 +16,6 @@ const FETCH_USER = gql`
     user_infos {
       displayName
       email
-      username
       uuid
     }
   }
@@ -32,7 +31,6 @@ const LOGIN_USER = gql`
           title
         }
         roles
-        username
         uuid
       }
       jwt
@@ -41,8 +39,8 @@ const LOGIN_USER = gql`
 `;
 
 const UPDATE_MAIN_USER = gql`
-  mutation updateMainUser($displayName: String!, $username: String, $email: String, $uuid: String!){
-    updateUser(displayName: $displayName, email: $email, username: $username, uuid: $uuid){
+  mutation updateMainUser($displayName: String, $email: String, $password: String, $uuid: String!){
+    updateUser(displayName: $displayName, email: $email, password: $password, uuid: $uuid){
       uuid
     }
   }
@@ -53,7 +51,8 @@ type UserContextType = {
   logout: () => void;
   login: (email: string, password: string) => Promise<void>;
   loading: boolean;
-  updateUser: (displayName: string, email:string, username:string) => Promise<void>
+  updateUser: (displayName: string, email:string) => Promise<void>;
+  updatePassword: (password:string) => Promise<void>
 };
 
 export default function UserContextProvider({
@@ -91,9 +90,13 @@ export default function UserContextProvider({
       setUser(data.loggedUser.user);
   };
 
-  const updateUser = async (displayName: string, email:string, username:string) => {
-    const { data } = await updateMainUser({ variables: { displayName, email, username, uuid: user.uuid  } });
-      setUser(prev => ({...prev, displayName: displayName, username: username, email: email}));
+  const updateUser = async (displayName: string, email:string) => {
+      await updateMainUser({ variables: { displayName, email, uuid: user.uuid  } });
+      setUser(prev => ({...prev, displayName: displayName, email: email}));
+  };
+
+  const updatePassword = async (password:string) => {
+    await updateMainUser({ variables: { password, uuid: user.uuid  } });
   };
 
   const logout = () => {
@@ -108,7 +111,8 @@ export default function UserContextProvider({
         login,
         logout,
         loading,
-        updateUser
+        updateUser,
+        updatePassword
       }}
     >
       {loading ? (

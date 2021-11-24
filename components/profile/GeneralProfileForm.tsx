@@ -2,7 +2,6 @@ import {Button, InputAdornment, TextField} from "@mui/material";
 import {useContext, useEffect, useState} from "react";
 import {UserContext} from "../../context/UserContext";
 import AlternateEmailIcon from '@mui/icons-material/AlternateEmail';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PersonIcon from '@mui/icons-material/Person';
 import _ from 'lodash';
 import {LoadingButton} from "@mui/lab";
@@ -10,7 +9,6 @@ import {LoadingButton} from "@mui/lab";
 export default function GeneralProfileForm({ showAlert = (text: string) => {} }) {
     const {user, updateUser} = useContext(UserContext);
     const initialUserState = {
-        username: user.username,
         email: user.email,
         displayName: user.displayName,
     };
@@ -25,13 +23,13 @@ export default function GeneralProfileForm({ showAlert = (text: string) => {} })
         setSubmitting(true);
         setError(null);
         try{
-            await updateUser(newProfile.displayName, newProfile.email, newProfile.username);
+            await updateUser(newProfile.displayName, newProfile.email);
+            showAlert("Modifications du profil enregistrées");
         }catch(e){
             console.error(e);
             setError(e.message ?? e.toString());
         }
         setSubmitting(false);
-        showAlert("Modifications du profil enregistrées");
     };
 
     const handleReset = () => {
@@ -75,22 +73,6 @@ export default function GeneralProfileForm({ showAlert = (text: string) => {} })
                     }}
                     value={newProfile.email}
                     onChange={(e) => {setNewProfile(prev => ({...prev, email: e.target.value}))}}
-                />
-                <TextField
-                    required
-                    id="outlined-basic"
-                    label="Nom d'utilisateur"
-                    variant="outlined"
-                    className="my-1"
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <AccountCircleIcon />
-                            </InputAdornment>
-                        ),
-                    }}
-                    value={newProfile.username}
-                    onChange={(e) => {setNewProfile(prev => ({...prev, username: e.target.value}))}}
                 />
             </div>
             {error && <div className="mt-2 error">{error}</div>}
