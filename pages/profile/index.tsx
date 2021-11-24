@@ -1,6 +1,5 @@
 import Layout from "../../components/layout/Layout";
-import {ReactNode, SyntheticEvent, useContext, useEffect, useState} from "react";
-import {UserContext} from "../../context/UserContext";
+import {ReactNode, SyntheticEvent, useEffect, useState} from "react";
 import {NextSeo} from "next-seo";
 import {Alert, Box, Collapse, IconButton, Tab, Tabs, Typography} from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -18,7 +17,6 @@ function a11yProps(index: number) {
 }
 
 export default function Profile() {
-    const {user} = useContext(UserContext);
     const [value, setValue] = useState(0);
     const [openAlert, setOpenAlert] = useState(false);
     const [alertText, setAlertText] = useState("Opération effectuée");
