@@ -16,10 +16,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import {PropsWithChildren, useContext, useState} from "react";
+import {PropsWithChildren, useContext, useEffect, useState} from "react";
 import Link from "next/link";
 import {UserContext} from "../../context/UserContext";
 import {useRouter} from "next/router";
+import LinearProgress from '@mui/material/LinearProgress';
 
 const drawerWidth = 240;
 
@@ -31,6 +32,16 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const {logout} = useContext(UserContext);
     const router = useRouter();
+    const [pageLoading, setPageLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handleStart = () => { setPageLoading(true); };
+        const handleComplete = () => { setPageLoading(false); };
+
+        router.events.on('routeChangeStart', handleStart);
+        router.events.on('routeChangeComplete', handleComplete);
+        router.events.on('routeChangeError', handleComplete);
+    }, [router]);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
@@ -145,6 +156,7 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
                 sx={{ flexGrow: 1, p: 2, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
                 <Toolbar />
+                {pageLoading && <LinearProgress />}
                 {children}
             </Box>
         </Box>
