@@ -21,6 +21,7 @@ import Link from "next/link";
 import {UserContext} from "../../context/UserContext";
 import {useRouter} from "next/router";
 import LinearProgress from '@mui/material/LinearProgress';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 const drawerWidth = 240;
 
@@ -67,6 +68,12 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
                         <HomeIcon />
                     </ListItemIcon>
                     <ListItemText primary="Accueil" />
+                </ListItem>
+                <ListItem button key="categories" onClick={() => {goTo('/categories')}}>
+                    <ListItemIcon>
+                        <ListAltIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Catégories" />
                 </ListItem>
                 <ListItem button key="events" onClick={() => {goTo('/events')}}>
                     <ListItemIcon>

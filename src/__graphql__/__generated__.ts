@@ -37,6 +37,7 @@ export type Event = {
   prices: Array<Price>;
   startDate: Scalars['Date'];
   title: Scalars['String'];
+  uuid: Scalars['String'];
 };
 
 
@@ -91,7 +92,7 @@ export type MutationCreateBookingArgs = {
 
 
 export type MutationCreateEventArgs = {
-  categoriesUuid: Scalars['String'];
+  categoryUuid: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
   price?: Maybe<Scalars['Float']>;
@@ -132,9 +133,9 @@ export type MutationLoginArgs = {
 
 
 export type MutationRegisterArgs = {
+  displayName: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
-  username: Scalars['String'];
 };
 
 
@@ -144,7 +145,7 @@ export type MutationRestoreEventCategoryArgs = {
 
 
 export type MutationUpdateEventArgs = {
-  categoriesUuid?: Maybe<Scalars['String']>;
+  categoryUuid?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
   startDate?: Maybe<Scalars['Date']>;
@@ -164,7 +165,6 @@ export type MutationUpdateUserArgs = {
   email?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Role>>;
-  username?: Maybe<Scalars['String']>;
   uuid: Scalars['String'];
 };
 
@@ -285,3 +285,8 @@ export type UpdateMainUserMutationVariables = Exact<{
 
 
 export type UpdateMainUserMutation = { updateUser: { uuid: string } };
+
+export type FetchCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type FetchCategoriesQuery = { eventCategories: Array<{ isActive: boolean, name: string, uuid: string }> };
