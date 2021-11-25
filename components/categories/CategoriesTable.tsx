@@ -164,6 +164,8 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categories.length) : 0;
 
+    const initialIndex = page * rowsPerPage;
+
     return (
         <div className="w-full">
             <Paper sx={{ width: '100%', mb: 2 }}>
@@ -180,7 +182,7 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                             rowCount={categories.length}
                         />
                         <TableBody>
-                            {categories.map((category, index) => {
+                            {categories.slice(initialIndex, initialIndex + rowsPerPage).map((category, index) => {
                                 const isItemSelected = isSelected(category.uuid);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 

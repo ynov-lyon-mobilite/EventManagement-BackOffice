@@ -69,6 +69,7 @@ export type Mutation = {
   createBooking: Booking;
   createEvent: Event;
   createEventCategory: EventCategory;
+  createPrice: Price;
   deleteEvent: Event;
   deleteEventCategory: EventCategory;
   deleteUser: User;
@@ -103,6 +104,13 @@ export type MutationCreateEventArgs = {
 
 export type MutationCreateEventCategoryArgs = {
   name: Scalars['String'];
+};
+
+
+export type MutationCreatePriceArgs = {
+  description?: Maybe<Scalars['String']>;
+  eventUuid: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 
@@ -262,6 +270,13 @@ export type UserNode = {
   cursor: Scalars['CursorID'];
   node: User;
 };
+
+export type CreateNewCategoryMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type CreateNewCategoryMutation = { category: { uuid: string, name: string, isActive: boolean } };
 
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 

@@ -2,9 +2,6 @@ import Layout from "../../components/layout/Layout";
 import {NextSeo} from "next-seo";
 import {gql, useQuery} from "@apollo/client";
 import {FetchCategoriesQuery} from "../../src/__graphql__/__generated__";
-import {
-    Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormGroup, TextField,
-} from "@mui/material";
 import {useEffect, useState} from "react";
 import CategoriesTable from "../../components/categories/CategoriesTable";
 import NewCategoryDialog from "../../components/categories/NewCategoryDialog";
@@ -38,6 +35,10 @@ export default function Categories() {
         setOpenCreationDialog(false);
     };
 
+    const handleNewCategory = (category) => {
+        setCategories(prev => [...prev, category]);
+    };
+
     return (
         <Layout>
             <NextSeo
@@ -49,7 +50,13 @@ export default function Categories() {
             ) : (
                 <>
                     <CategoriesTable categories={categories} onCreation={handleCreationIconCLick}/>
-                    {openCreationDialog && <NewCategoryDialog open={true} onClose={handleCloseCreationDialog}/>}
+                    {openCreationDialog && (
+                        <NewCategoryDialog
+                            open={true}
+                            onClose={handleCloseCreationDialog}
+                            onNew={handleNewCategory}
+                        />
+                    )}
                 </>
             )}
         </Layout>
