@@ -1,7 +1,10 @@
 import Layout from "../../components/layout/Layout";
 import {NextSeo} from "next-seo";
-import {gql, useQuery} from "@apollo/client";
-import {FetchCategoriesQuery} from "../../src/__graphql__/__generated__";
+import {gql, useMutation, useQuery} from "@apollo/client";
+import {
+    DeleteCategoriesMutation, DeleteCategoriesMutationVariables,
+    FetchCategoriesQuery
+} from "../../src/__graphql__/__generated__";
 import {useEffect, useState} from "react";
 import CategoriesTable from "../../components/categories/CategoriesTable";
 import NewCategoryDialog from "../../components/categories/NewCategoryDialog";
@@ -16,8 +19,17 @@ const FETCH_CATEGORIES = gql`
     }
 `;
 
+const DELETE_CATEGORIES = gql`
+    mutation DeleteCategories($uuids: [String!]!){
+        deleteEventCategories(uuids: $uuids){
+            uuid
+        }
+    }
+`;
+
 export default function Categories() {
     const { data, loading } = useQuery<FetchCategoriesQuery>(FETCH_CATEGORIES);
+    const [deleteCategories] = useMutation<DeleteCategoriesMutation, DeleteCategoriesMutationVariables>(DELETE_CATEGORIES);
     const [categories, setCategories] = useState([]);
     const [openCreationDialog, setOpenCreationDialog] = useState(false);
 
@@ -39,6 +51,17 @@ export default function Categories() {
         setCategories(prev => [...prev, category]);
     };
 
+    const handleDelete = async (uuids) => {
+        console.log(uuids);
+        await deleteCategories({variables : { uuids }});
+        setCategories(prev => prev.map(cat => {
+            if(uuids.includes(cat.uuid)){
+                return {...cat, isActive: false};
+            }
+            return cat;
+        }))
+    }
+
     return (
         <Layout>
             <NextSeo
@@ -49,7 +72,11 @@ export default function Categories() {
                 <>chargement...</>
             ) : (
                 <>
-                    <CategoriesTable categories={categories} onCreation={handleCreationIconCLick}/>
+                    <CategoriesTable
+                        categories={categories}
+                        onCreation={handleCreationIconCLick}
+                        onDeletion={handleDelete}
+                    />
                     {openCreationDialog && (
                         <NewCategoryDialog
                             open={true}

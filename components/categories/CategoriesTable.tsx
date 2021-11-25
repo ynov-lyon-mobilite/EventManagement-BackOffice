@@ -68,7 +68,14 @@ function EnhancedTableHead(props) {
     );
 }
 
-const EnhancedTableToolbar = ({ numSelected, onCreation }) => {
+const EnhancedTableToolbar = ({ numSelected, onCreation, onDelete }) => {
+    const [deleting, setDeleting] = useState(false);
+    const handleDelete = async () => {
+        setDeleting(true);
+        await onDelete();
+        setDeleting(false);
+    };
+
     return (
         <Toolbar
             sx={{
@@ -101,8 +108,8 @@ const EnhancedTableToolbar = ({ numSelected, onCreation }) => {
             )}
 
             {numSelected > 0 ? (
-                <Tooltip title="Suppression">
-                    <IconButton>
+                <Tooltip title="Désactivation">
+                    <IconButton disabled={deleting} onClick={handleDelete}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
@@ -117,7 +124,7 @@ const EnhancedTableToolbar = ({ numSelected, onCreation }) => {
     );
 };
 
-export default function CategoriesTable({categories = [], onCreation = () => {}}) {
+export default function CategoriesTable({categories = [], onCreation = () => {}, onDeletion = (uuids) => {}}) {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -160,7 +167,11 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
         setPage(0);
     };
 
-    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const handleDelete = () => {
+        onDeletion(selected);
+    };
+
+    const isSelected = (uuid) => selected.indexOf(uuid) !== -1;
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categories.length) : 0;
 
@@ -169,7 +180,11 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
     return (
         <div className="w-full">
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} onCreation={onCreation}/>
+                <EnhancedTableToolbar
+                    numSelected={selected.length}
+                    onCreation={onCreation}
+                    onDelete={handleDelete}
+                />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}

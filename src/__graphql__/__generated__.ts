@@ -71,6 +71,7 @@ export type Mutation = {
   createEventCategory: EventCategory;
   createPrice: Price;
   deleteEvent: Event;
+  deleteEventCategories: Array<EventCategory>;
   deleteEventCategory: EventCategory;
   deleteUser: User;
   /**
@@ -116,6 +117,11 @@ export type MutationCreatePriceArgs = {
 
 export type MutationDeleteEventArgs = {
   uuid: Scalars['String'];
+};
+
+
+export type MutationDeleteEventCategoriesArgs = {
+  uuids: Array<Scalars['String']>;
 };
 
 
@@ -305,3 +311,10 @@ export type FetchCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type FetchCategoriesQuery = { eventCategories: Array<{ isActive: boolean, name: string, uuid: string }> };
+
+export type DeleteCategoriesMutationVariables = Exact<{
+  uuids: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type DeleteCategoriesMutation = { deleteEventCategories: Array<{ uuid: string }> };
