@@ -13,8 +13,9 @@ import {
 import {alpha} from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import {CategoryContext} from "../../context/CategoryContext";
 
 const headCells = [
     {
@@ -131,12 +132,8 @@ const EnhancedTableToolbar = ({ numSelected, onCreation, onDelete }) => {
     );
 };
 
-export default function CategoriesTable({
-        categories = [],
-        onCreation = () => {},
-        onDeletion = (uuids) => {},
-        onRestore = (category) => {}
-    }) {
+export default function CategoriesTable({categories = [], onCreation = () => {}}) {
+    const {deleteCategoriesFromId, restoreCategory} = useContext(CategoryContext);
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -180,14 +177,14 @@ export default function CategoriesTable({
         setPage(0);
     };
 
-    const handleDelete = () => {
-        onDeletion(selected);
-    };
-
     const handleRestore = async (category) => {
         setRestoreIds(prev => [...prev, category.uuid]);
-        await onRestore(category);
+        await restoreCategory(category);
         setRestoreIds(prev => prev.filter(id => id !== category.uuid));
+    };
+
+    const handleDelete = async () => {
+        await deleteCategoriesFromId(selected);
     };
 
     const isSelected = (uuid) => selected.indexOf(uuid) !== -1;

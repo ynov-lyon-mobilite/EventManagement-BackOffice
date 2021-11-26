@@ -6,27 +6,13 @@ import {
     DialogTitle,
     TextField
 } from "@mui/material";
-import {useState} from "react";
-import {gql, useMutation} from "@apollo/client";
-import {
-    CreateNewCategoryMutation,
-    CreateNewCategoryMutationVariables
-} from "../../src/__graphql__/__generated__";
+import {useContext, useState} from "react";
 import {LoadingButton} from "@mui/lab";
+import {CategoryContext} from "../../context/CategoryContext";
 
-const CREATE_CATEGORY = gql`
-    mutation CreateNewCategory($name: String!){
-        category: createEventCategory(name: $name){
-            uuid
-            name
-            isActive
-        }
-    }
-`;
-
-export default function NewCategoryDialog({open, onClose, onNew}){
+export default function NewCategoryDialog({open, onClose}){
+    const {createCategory} = useContext(CategoryContext);
     const [name, setName] = useState("");
-    const [createCategory] = useMutation<CreateNewCategoryMutation, CreateNewCategoryMutationVariables>(CREATE_CATEGORY);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
 
@@ -35,8 +21,7 @@ export default function NewCategoryDialog({open, onClose, onNew}){
         setError(null);
         setSubmitting(true);
         try{
-            const { data } = await createCategory({ variables: { name } });
-            onNew(data.category);
+            await createCategory(name);
             onClose();
         }catch(e){
             console.error(e);
