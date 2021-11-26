@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../apollo/apollo-client";
 import CategoryContextProvider from "../context/CategoryContext";
+import EventContextProvider from "../context/EventContext";
 
 const theme = createTheme({
   palette: {
@@ -24,9 +25,11 @@ function MyApp({ Component, pageProps }) {
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
         <UserContextProvider>
-          <CategoryContextProvider>
-            <Component {...pageProps} />
-          </CategoryContextProvider>
+          <EventContextProvider>
+            <CategoryContextProvider>
+              <Component {...pageProps} />
+            </CategoryContextProvider>
+          </EventContextProvider>
         </UserContextProvider>
       </ThemeProvider>
     </ApolloProvider>

@@ -4,7 +4,7 @@ import {
     Paper, Table, TableBody,
     TableCell,
     TableContainer,
-    TableHead, TablePagination,
+    TablePagination,
     TableRow,
     Toolbar,
     Tooltip,
@@ -16,6 +16,7 @@ import AddIcon from "@mui/icons-material/Add";
 import {useContext, useState} from "react";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import {CategoryContext} from "../../context/CategoryContext";
+import EnhancedTableHead from "../table/EnhancedTableHead";
 
 const headCells = [
     {
@@ -44,37 +45,7 @@ const headCells = [
     },
 ];
 
-function EnhancedTableHead(props) {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = props;
 
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        color="primary"
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={rowCount > 0 && numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': 'Sélection de toutes les catégories',
-                        }}
-                    />
-                </TableCell>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        align={headCell.numeric ? 'right' : 'left'}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        {headCell.label}
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
 
 const EnhancedTableToolbar = ({ numSelected, onCreation, onDelete }) => {
     const [deleting, setDeleting] = useState(false);
@@ -136,7 +107,7 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
     const {deleteCategoriesFromId, restoreCategory} = useContext(CategoryContext);
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [restoreIds, setRestoreIds] = useState([]);
 
     const handleSelectAllClick = (event) => {
@@ -148,12 +119,12 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
         setSelected([]);
     };
 
-    const handleClick = (event, name) => {
-        const selectedIndex = selected.indexOf(name);
+    const handleClick = (event, id) => {
+        const selectedIndex = selected.indexOf(id);
         let newSelected = [];
 
         if (selectedIndex === -1) {
-            newSelected = newSelected.concat(selected, name);
+            newSelected = newSelected.concat(selected, id);
         } else if (selectedIndex === 0) {
             newSelected = newSelected.concat(selected.slice(1));
         } else if (selectedIndex === selected.length - 1) {
@@ -211,6 +182,8 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                             numSelected={selected.length}
                             onSelectAllClick={handleSelectAllClick}
                             rowCount={categories.length}
+                            headCells={headCells}
+                            label="Sélection de toutes les catégories"
                         />
                         <TableBody>
                             {categories.slice(initialIndex, initialIndex + rowsPerPage).map((category, index) => {

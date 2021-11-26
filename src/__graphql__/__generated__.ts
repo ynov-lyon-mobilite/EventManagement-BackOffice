@@ -277,12 +277,10 @@ export type UserNode = {
   node: User;
 };
 
-export type RestoreCategoryMutationVariables = Exact<{
-  uuid: Scalars['String'];
-}>;
+export type FetchCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type RestoreCategoryMutation = { restoreEventCategory: { uuid: string } };
+export type FetchCategoriesQuery = { eventCategories: Array<{ isActive: boolean, name: string, uuid: string }> };
 
 export type CreateNewCategoryMutationVariables = Exact<{
   name: Scalars['String'];
@@ -290,6 +288,28 @@ export type CreateNewCategoryMutationVariables = Exact<{
 
 
 export type CreateNewCategoryMutation = { category: { uuid: string, name: string, isActive: boolean } };
+
+export type DeleteCategoriesMutationVariables = Exact<{
+  uuids: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type DeleteCategoriesMutation = { deleteEventCategories: Array<{ uuid: string }> };
+
+export type RestoreCategoryMutationVariables = Exact<{
+  uuid: Scalars['String'];
+}>;
+
+
+export type RestoreCategoryMutation = { restoreEventCategory: { uuid: string } };
+
+export type FetchEventsQueryVariables = Exact<{
+  currentPage?: Maybe<Scalars['Int']>;
+  take?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate: any, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string }, prices: Array<{ price: number }> } }> } };
 
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -313,15 +333,3 @@ export type UpdateMainUserMutationVariables = Exact<{
 
 
 export type UpdateMainUserMutation = { updateUser: { uuid: string } };
-
-export type FetchCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type FetchCategoriesQuery = { eventCategories: Array<{ isActive: boolean, name: string, uuid: string }> };
-
-export type DeleteCategoriesMutationVariables = Exact<{
-  uuids: Array<Scalars['String']> | Scalars['String'];
-}>;
-
-
-export type DeleteCategoriesMutation = { deleteEventCategories: Array<{ uuid: string }> };
