@@ -2,6 +2,7 @@ import Layout from "../../components/layout/Layout";
 import {NextSeo} from "next-seo";
 import {useContext} from "react";
 import {EventContext} from "../../context/EventContext";
+import EventsTable from "../../components/events/EventsTable";
 
 export default function Events() {
     const {events, loading} = useContext(EventContext);
@@ -13,7 +14,7 @@ export default function Events() {
                 description="Gestion des évènements | back-office Yvent"
             />
             {loading ? "Chargement..." : (
-                <div>{JSON.stringify(events)}</div>
+                <EventsTable events={events} onCreation={() => {}}/>
             )}
         </Layout>
     );

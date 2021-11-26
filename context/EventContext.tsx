@@ -35,7 +35,7 @@ export default function EventContextProvider({children}){
 
     useEffect(() => {
         if(data){
-            setEvents(data.events.edges ?? []);
+            setEvents(data.events.edges ? data.events.edges.map(item => item.node) : []);
         }
     },[data])
 

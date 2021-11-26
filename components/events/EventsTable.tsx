@@ -10,11 +10,10 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import {useContext, useState} from "react";
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
-import {CategoryContext} from "../../context/CategoryContext";
+import {useContext} from "react";
 import EnhancedTableHead from "../table/EnhancedTableHead";
 import EnhancedTableToolbar from "../table/EnhancedTableToolbar";
+import {EventContext} from "../../context/EventContext";
 import useSelectedItems from "../../hooks/useSelectedItems";
 import usePagination from "../../hooks/usePagination";
 
@@ -26,16 +25,34 @@ const headCells = [
         label: 'ID',
     },
     {
-        id: 'name',
-        numeric: false,
-        disablePadding: true,
-        label: 'Nom',
-    },
-    {
-        id: 'active',
+        id: 'title',
         numeric: false,
         disablePadding: false,
-        label: 'Active',
+        label: 'Intitulé',
+    },
+    {
+        id: 'category',
+        numeric: false,
+        disablePadding: false,
+        label: 'Catégorie',
+    },
+    {
+        id: 'startDate',
+        numeric: false,
+        disablePadding: false,
+        label: 'Début',
+    },
+    {
+        id: 'endDate',
+        numeric: false,
+        disablePadding: false,
+        label: 'Fin',
+    },
+    {
+        id: 'participantCount',
+        numeric: false,
+        disablePadding: false,
+        label: 'Nombre de participants',
     },
     {
         id: 'action',
@@ -47,24 +64,17 @@ const headCells = [
 
 
 
-const CategoriesTableToolbar = ({ numSelected, onCreation, onDelete }) => {
-    const [deleting, setDeleting] = useState(false);
-    const handleDelete = async () => {
-        setDeleting(true);
-        await onDelete();
-        setDeleting(false);
-    };
-
+const EventsTableToolbar = ({ numSelected, onCreation }) => {
     return (
-        <EnhancedTableToolbar numSelected={numSelected} title="Catégories">
+        <EnhancedTableToolbar numSelected={numSelected} title="Evènements">
             {numSelected > 0 ? (
                 <Tooltip title="Désactivation">
-                    <IconButton disabled={deleting} onClick={handleDelete}>
+                    <IconButton onClick={() => {}}>
                         <DeleteIcon />
                     </IconButton>
                 </Tooltip>
             ) : (
-                <Tooltip title="Nouvelle catégorie">
+                <Tooltip title="Nouvel évènement">
                     <IconButton onClick={onCreation}>
                         <AddIcon />
                     </IconButton>
@@ -74,31 +84,19 @@ const CategoriesTableToolbar = ({ numSelected, onCreation, onDelete }) => {
     );
 };
 
-export default function CategoriesTable({categories = [], onCreation = () => {}}) {
-    const {deleteCategoriesFromId, restoreCategory} = useContext(CategoryContext);
+export default function EventsTable({events = [], onCreation = () => {}}) {
+    const {} = useContext(EventContext);
     const {selected, selection, selectAll, isSelected} = useSelectedItems([]);
-    const {page, rowsPerPage, changePage, changeRowsPerPage, initialIndex} = usePagination(0, 10);
-    const [restoreIds, setRestoreIds] = useState([]);
+    const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,10);
 
-    const handleRestore = async (category) => {
-        setRestoreIds(prev => [...prev, category.uuid]);
-        await restoreCategory(category);
-        setRestoreIds(prev => prev.filter(id => id !== category.uuid));
-    };
-
-    const handleDelete = async () => {
-        await deleteCategoriesFromId(selected);
-    };
-
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - categories.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - events.length) : 0;
 
     return (
         <div className="w-full">
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <CategoriesTableToolbar
+                <EventsTableToolbar
                     numSelected={selected.length}
                     onCreation={onCreation}
-                    onDelete={handleDelete}
                 />
                 <TableContainer>
                     <Table
@@ -108,23 +106,23 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                     >
                         <EnhancedTableHead
                             numSelected={selected.length}
-                            onSelectAllClick={(e) => selectAll(e, categories)}
-                            rowCount={categories.length}
+                            onSelectAllClick={(e) => selectAll(e, events)}
+                            rowCount={events.length}
                             headCells={headCells}
                         />
                         <TableBody>
-                            {categories.slice(initialIndex, initialIndex + rowsPerPage).map((category, index) => {
-                                const isItemSelected = isSelected(category.uuid);
+                            {events.slice(initialIndex, initialIndex + rowsPerPage).map((event, index) => {
+                                const isItemSelected = isSelected(event.uuid);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(event) => selection(event, category.uuid)}
+                                        onClick={(e) => selection(e, event.uuid)}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
-                                        key={category.uuid}
+                                        key={event.uuid}
                                         selected={isItemSelected}
                                     >
                                         <TableCell padding="checkbox">
@@ -142,17 +140,14 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                                             scope="row"
                                             padding="none"
                                         >
-                                            {category.uuid}
+                                            {event.uuid}
                                         </TableCell>
-                                        <TableCell align="left">{category.name}</TableCell>
-                                        <TableCell align="left">{category.isActive.toString()}</TableCell>
+                                        <TableCell align="left">{event.title}</TableCell>
+                                        <TableCell align="left">{event.category.name}</TableCell>
+                                        <TableCell align="left">{event.startDate}</TableCell>
+                                        <TableCell align="left">{event.endDate}</TableCell>
+                                        <TableCell align="left">{event.participantsCount}</TableCell>
                                         <TableCell align="left">
-                                            {!category.isActive && (
-                                                <IconButton disabled={restoreIds.includes(category.uuid)}
-                                                            onClick={async (e) => {e.stopPropagation();await handleRestore(category)}}>
-                                                    <PowerSettingsNewIcon/>
-                                                </IconButton>
-                                            )}
                                         </TableCell>
                                     </TableRow>
                                 );
@@ -168,7 +163,7 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={categories.length}
+                    count={events.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={changePage}

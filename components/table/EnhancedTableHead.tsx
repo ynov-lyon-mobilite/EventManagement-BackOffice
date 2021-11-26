@@ -1,6 +1,6 @@
 import {Checkbox, TableCell, TableHead, TableRow} from "@mui/material";
 
-export default function EnhancedTableHead({ onSelectAllClick, order = null, orderBy = null, numSelected, rowCount, headCells, label }) {
+export default function EnhancedTableHead({ onSelectAllClick, order = null, orderBy = null, numSelected, rowCount, headCells }) {
     return (
         <TableHead>
             <TableRow>
@@ -10,9 +10,6 @@ export default function EnhancedTableHead({ onSelectAllClick, order = null, orde
                         indeterminate={numSelected > 0 && numSelected < rowCount}
                         checked={rowCount > 0 && numSelected === rowCount}
                         onChange={onSelectAllClick}
-                        inputProps={{
-                            'aria-label': label
-                        }}
                     />
                 </TableCell>
                 {headCells.map((headCell) => (
