@@ -7,6 +7,10 @@ import EventsTable from "../../components/events/EventsTable";
 export default function Events() {
     const {events, loading} = useContext(EventContext);
 
+    const handleNewEvent = () => {
+        console.log('new event');
+    };
+
     return (
         <Layout>
             <NextSeo
@@ -14,7 +18,7 @@ export default function Events() {
                 description="Gestion des évènements | back-office Yvent"
             />
             {loading ? "Chargement..." : (
-                <EventsTable events={events} onCreation={() => {}}/>
+                <EventsTable events={events} onCreation={handleNewEvent}/>
             )}
         </Layout>
     );

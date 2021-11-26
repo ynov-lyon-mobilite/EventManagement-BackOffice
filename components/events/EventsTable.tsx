@@ -13,8 +13,8 @@ import EnhancedTableHead from "../table/EnhancedTableHead";
 import EnhancedTableToolbar from "../table/EnhancedTableToolbar";
 import {EventContext} from "../../context/EventContext";
 import usePagination from "../../hooks/usePagination";
-import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import {useRouter} from "next/router";
 
 const headCells = [
     {
@@ -75,10 +75,11 @@ const EventsTableToolbar = ({ numSelected = 0, onCreation }) => {
 
 export default function EventsTable({events = [], onCreation = () => {}}) {
     const {} = useContext(EventContext);
+    const router = useRouter();
     const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,10);
 
-    const handleEdit = (event) => {
-        console.log(`see ${event.uuid}`);
+    const handleView = (event) => {
+        router.push(`/events/${event.uuid}`);
     };
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - events.length) : 0;
@@ -123,7 +124,7 @@ export default function EventsTable({events = [], onCreation = () => {}}) {
                                         <TableCell align="left">{event.participantsCount}</TableCell>
                                         <TableCell align="left">
                                             <Tooltip title="Voir l'évènement">
-                                                <IconButton onClick={(e) => {e.stopPropagation();handleEdit(event)}}>
+                                                <IconButton onClick={(e) => {e.stopPropagation();handleView(event)}}>
                                                     <VisibilityIcon/>
                                                 </IconButton>
                                             </Tooltip>
