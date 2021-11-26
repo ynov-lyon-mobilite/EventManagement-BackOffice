@@ -1,5 +1,4 @@
 import {
-    Checkbox,
     IconButton,
     Paper, Table, TableBody,
     TableCell,
@@ -8,20 +7,20 @@ import {
     TableRow,
     Tooltip,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import {useContext} from "react";
 import EnhancedTableHead from "../table/EnhancedTableHead";
 import EnhancedTableToolbar from "../table/EnhancedTableToolbar";
 import {EventContext} from "../../context/EventContext";
-import useSelectedItems from "../../hooks/useSelectedItems";
 import usePagination from "../../hooks/usePagination";
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const headCells = [
     {
         id: 'id',
         numeric: false,
-        disablePadding: true,
+        disablePadding: false,
         label: 'ID',
     },
     {
@@ -62,32 +61,25 @@ const headCells = [
     },
 ];
 
-
-
-const EventsTableToolbar = ({ numSelected, onCreation }) => {
+const EventsTableToolbar = ({ numSelected = 0, onCreation }) => {
     return (
         <EnhancedTableToolbar numSelected={numSelected} title="Evènements">
-            {numSelected > 0 ? (
-                <Tooltip title="Désactivation">
-                    <IconButton onClick={() => {}}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
-            ) : (
-                <Tooltip title="Nouvel évènement">
-                    <IconButton onClick={onCreation}>
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
+            <Tooltip title="Nouvel évènement">
+                <IconButton onClick={onCreation}>
+                    <AddIcon />
+                </IconButton>
+            </Tooltip>
         </EnhancedTableToolbar>
     );
 };
 
 export default function EventsTable({events = [], onCreation = () => {}}) {
     const {} = useContext(EventContext);
-    const {selected, selection, selectAll, isSelected} = useSelectedItems([]);
     const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,10);
+
+    const handleEdit = (event) => {
+        console.log(`see ${event.uuid}`);
+    };
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - events.length) : 0;
 
@@ -95,7 +87,6 @@ export default function EventsTable({events = [], onCreation = () => {}}) {
         <div className="w-full">
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EventsTableToolbar
-                    numSelected={selected.length}
                     onCreation={onCreation}
                 />
                 <TableContainer>
@@ -105,40 +96,23 @@ export default function EventsTable({events = [], onCreation = () => {}}) {
                         size={'medium'}
                     >
                         <EnhancedTableHead
-                            numSelected={selected.length}
-                            onSelectAllClick={(e) => selectAll(e, events)}
                             rowCount={events.length}
                             headCells={headCells}
                         />
                         <TableBody>
                             {events.slice(initialIndex, initialIndex + rowsPerPage).map((event, index) => {
-                                const isItemSelected = isSelected(event.uuid);
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(e) => selection(e, event.uuid)}
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={event.uuid}
-                                        selected={isItemSelected}
                                     >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                color="primary"
-                                                checked={isItemSelected}
-                                                inputProps={{
-                                                    'aria-labelledby': labelId,
-                                                }}
-                                            />
-                                        </TableCell>
                                         <TableCell
                                             component="th"
                                             id={labelId}
                                             scope="row"
-                                            padding="none"
                                         >
                                             {event.uuid}
                                         </TableCell>
@@ -148,6 +122,11 @@ export default function EventsTable({events = [], onCreation = () => {}}) {
                                         <TableCell align="left">{event.endDate}</TableCell>
                                         <TableCell align="left">{event.participantsCount}</TableCell>
                                         <TableCell align="left">
+                                            <Tooltip title="Voir l'évènement">
+                                                <IconButton onClick={(e) => {e.stopPropagation();handleEdit(event)}}>
+                                                    <VisibilityIcon/>
+                                                </IconButton>
+                                            </Tooltip>
                                         </TableCell>
                                     </TableRow>
                                 );

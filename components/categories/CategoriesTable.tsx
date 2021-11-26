@@ -148,10 +148,12 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                                         <TableCell align="left">{category.isActive ? 'Oui' : 'Non'}</TableCell>
                                         <TableCell align="left">
                                             {!category.isActive && (
-                                                <IconButton disabled={restoreIds.includes(category.uuid)}
-                                                            onClick={async (e) => {e.stopPropagation();await handleRestore(category)}}>
-                                                    <PowerSettingsNewIcon/>
-                                                </IconButton>
+                                                <Tooltip title="Activer">
+                                                    <IconButton disabled={restoreIds.includes(category.uuid)}
+                                                                onClick={async (e) => {e.stopPropagation();await handleRestore(category)}}>
+                                                        <PowerSettingsNewIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
                                             )}
                                         </TableCell>
                                     </TableRow>
