@@ -14,6 +14,7 @@ import {alpha} from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import {useState} from "react";
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 
 const headCells = [
     {
@@ -33,6 +34,12 @@ const headCells = [
         numeric: false,
         disablePadding: false,
         label: 'Active',
+    },
+    {
+        id: 'action',
+        numeric: false,
+        disablePadding: false,
+        label: '',
     },
 ];
 
@@ -124,10 +131,16 @@ const EnhancedTableToolbar = ({ numSelected, onCreation, onDelete }) => {
     );
 };
 
-export default function CategoriesTable({categories = [], onCreation = () => {}, onDeletion = (uuids) => {}}) {
+export default function CategoriesTable({
+        categories = [],
+        onCreation = () => {},
+        onDeletion = (uuids) => {},
+        onRestore = (category) => {}
+    }) {
     const [selected, setSelected] = useState([]);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [restoreIds, setRestoreIds] = useState([]);
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
@@ -169,6 +182,12 @@ export default function CategoriesTable({categories = [], onCreation = () => {},
 
     const handleDelete = () => {
         onDeletion(selected);
+    };
+
+    const handleRestore = async (category) => {
+        setRestoreIds(prev => [...prev, category.uuid]);
+        await onRestore(category);
+        setRestoreIds(prev => prev.filter(id => id !== category.uuid));
     };
 
     const isSelected = (uuid) => selected.indexOf(uuid) !== -1;
@@ -230,6 +249,14 @@ export default function CategoriesTable({categories = [], onCreation = () => {},
                                         </TableCell>
                                         <TableCell align="left">{category.name}</TableCell>
                                         <TableCell align="left">{category.isActive.toString()}</TableCell>
+                                        <TableCell align="left">
+                                            {!category.isActive && (
+                                                <IconButton disabled={restoreIds.includes(category.uuid)}
+                                                            onClick={async (e) => {e.stopPropagation();await handleRestore(category)}}>
+                                                    <PowerSettingsNewIcon/>
+                                                </IconButton>
+                                            )}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })}

@@ -277,6 +277,13 @@ export type UserNode = {
   node: User;
 };
 
+export type RestoreCategoryMutationVariables = Exact<{
+  uuid: Scalars['String'];
+}>;
+
+
+export type RestoreCategoryMutation = { restoreEventCategory: { uuid: string } };
+
 export type CreateNewCategoryMutationVariables = Exact<{
   name: Scalars['String'];
 }>;
