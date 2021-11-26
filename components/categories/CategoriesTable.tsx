@@ -145,7 +145,7 @@ export default function CategoriesTable({categories = [], onCreation = () => {}}
                                             {category.uuid}
                                         </TableCell>
                                         <TableCell align="left">{category.name}</TableCell>
-                                        <TableCell align="left">{category.isActive.toString()}</TableCell>
+                                        <TableCell align="left">{category.isActive ? 'Oui' : 'Non'}</TableCell>
                                         <TableCell align="left">
                                             {!category.isActive && (
                                                 <IconButton disabled={restoreIds.includes(category.uuid)}
