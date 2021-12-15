@@ -8,13 +8,12 @@ import {
     Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import {useContext} from "react";
 import EnhancedTableHead from "../table/EnhancedTableHead";
 import EnhancedTableToolbar from "../table/EnhancedTableToolbar";
-import {EventContext} from "../../context/EventContext";
 import usePagination from "../../hooks/usePagination";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useRouter} from "next/router";
+import EditIcon from '@mui/icons-material/Edit';
 
 const headCells = [
     {
@@ -73,8 +72,7 @@ const EventsTableToolbar = ({ numSelected = 0, onCreation }) => {
     );
 };
 
-export default function EventsTable({events = [], onCreation = () => {}}) {
-    const {} = useContext(EventContext);
+export default function EventsTable({events = [], onCreation = () => {}, onEdition = (event) => {}}) {
     const router = useRouter();
     const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,10);
 
@@ -122,10 +120,15 @@ export default function EventsTable({events = [], onCreation = () => {}}) {
                                         <TableCell align="left">{event.startDate}</TableCell>
                                         <TableCell align="left">{event.endDate}</TableCell>
                                         <TableCell align="left">{event.participantsCount}</TableCell>
-                                        <TableCell align="left">
+                                        <TableCell align="left" className="d-flex">
                                             <Tooltip title="Voir l'évènement">
                                                 <IconButton onClick={(e) => {e.stopPropagation();handleView(event)}}>
                                                     <VisibilityIcon/>
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Modifier l'évènement">
+                                                <IconButton onClick={(e) => {e.stopPropagation();onEdition(event)}}>
+                                                    <EditIcon/>
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>

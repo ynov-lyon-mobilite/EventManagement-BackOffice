@@ -22,6 +22,11 @@ export type Booking = {
   uuid: Scalars['String'];
 };
 
+export type CreatePriceInput = {
+  amount: Scalars['Float'];
+  description: Scalars['String'];
+};
+
 export type Cursor = {
   current?: Maybe<Scalars['CursorID']>;
   take: Scalars['Int'];
@@ -31,7 +36,7 @@ export type Cursor = {
 export type Event = {
   category: EventCategory;
   description?: Maybe<Scalars['String']>;
-  endDate: Scalars['Date'];
+  endDate?: Maybe<Scalars['Date']>;
   participants: UserConnection;
   participantsCount: Scalars['Int'];
   prices: Array<Price>;
@@ -42,10 +47,9 @@ export type Event = {
 
 
 export type EventParticipantsArgs = {
-  currentPage?: Maybe<Scalars['Int']>;
   cursor?: Maybe<Scalars['CursorID']>;
+  page?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
-  targetPage?: Maybe<Scalars['Int']>;
 };
 
 export type EventCategory = {
@@ -74,14 +78,12 @@ export type Mutation = {
   deleteEventCategories: Array<EventCategory>;
   deleteEventCategory: EventCategory;
   deleteUser: User;
-  /**
-   * Pay to join the event
-   * @deprecated Not implemented yet
-   */
-  joinEvent: Event;
+  /** Pay to join the event */
+  joinEvent: Scalars['String'];
   login: UserAuth;
   register: UserAuth;
   restoreEventCategory: EventCategory;
+  testSub: Scalars['Boolean'];
   updateEvent: Event;
   updateEventCategory: EventCategory;
   updateUser: User;
@@ -97,7 +99,7 @@ export type MutationCreateEventArgs = {
   categoryUuid: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
-  price?: Maybe<Scalars['Float']>;
+  prices?: Maybe<Array<CreatePriceInput>>;
   startDate: Scalars['Date'];
   title: Scalars['String'];
 };
@@ -109,9 +111,9 @@ export type MutationCreateEventCategoryArgs = {
 
 
 export type MutationCreatePriceArgs = {
+  amount: Scalars['Float'];
   description?: Maybe<Scalars['String']>;
   eventUuid: Scalars['String'];
-  price: Scalars['Float'];
 };
 
 
@@ -136,7 +138,10 @@ export type MutationDeleteUserArgs = {
 
 
 export type MutationJoinEventArgs = {
-  uuid: Scalars['String'];
+  cancelUrl: Scalars['String'];
+  eventUuid: Scalars['String'];
+  priceUuid: Scalars['String'];
+  successUrl: Scalars['String'];
 };
 
 
@@ -162,6 +167,7 @@ export type MutationUpdateEventArgs = {
   categoryUuid?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
+  prices?: Maybe<Array<CreatePriceInput>>;
   startDate?: Maybe<Scalars['Date']>;
   title?: Maybe<Scalars['String']>;
   uuid: Scalars['String'];
@@ -190,8 +196,8 @@ export type PageInfo = {
 };
 
 export type Price = {
+  amount: Scalars['Float'];
   description: Scalars['String'];
-  price: Scalars['Float'];
   uuid: Scalars['String'];
 };
 
@@ -215,19 +221,17 @@ export type QueryEventArgs = {
 
 
 export type QueryEventParticipantsArgs = {
-  currentPage?: Maybe<Scalars['Int']>;
   cursor?: Maybe<Scalars['CursorID']>;
   eventUuid: Scalars['String'];
+  page?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
-  targetPage?: Maybe<Scalars['Int']>;
 };
 
 
 export type QueryEventsArgs = {
-  currentPage?: Maybe<Scalars['Int']>;
   cursor?: Maybe<Scalars['CursorID']>;
+  page?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
-  targetPage?: Maybe<Scalars['Int']>;
 };
 
 
@@ -237,16 +241,18 @@ export type QueryUserArgs = {
 
 
 export type QueryUsersArgs = {
-  currentPage?: Maybe<Scalars['Int']>;
   cursor?: Maybe<Scalars['CursorID']>;
+  page?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
-  targetPage?: Maybe<Scalars['Int']>;
 };
 
 export enum Role {
-  Admin = 'ADMIN',
-  Dev = 'DEV'
+  Admin = 'ADMIN'
 }
+
+export type Subscription = {
+  eventCreated: User;
+};
 
 export type Success = {
   success: Scalars['Boolean'];
@@ -309,7 +315,30 @@ export type FetchEventsQueryVariables = Exact<{
 }>;
 
 
-export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate: any, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string }, prices: Array<{ price: number }> } }> } };
+export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number }> } }> } };
+
+export type CreateNewEventMutationVariables = Exact<{
+  categoryUuid: Scalars['String'];
+  title: Scalars['String'];
+  startDate: Scalars['Date'];
+  endDate?: Maybe<Scalars['Date']>;
+  description?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateNewEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, description: string }> } };
+
+export type UpdateEventMutationVariables = Exact<{
+  categoryUuid: Scalars['String'];
+  title: Scalars['String'];
+  startDate: Scalars['Date'];
+  uuid: Scalars['String'];
+  endDate?: Maybe<Scalars['Date']>;
+  description?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, description: string }> } };
 
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 

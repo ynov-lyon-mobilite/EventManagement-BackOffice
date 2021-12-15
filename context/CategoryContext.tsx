@@ -9,6 +9,7 @@ import {
 
 type CategoryContextType = {
     categories : FetchCategoriesQuery["eventCategories"] | null,
+    activeCategories : FetchCategoriesQuery["eventCategories"] | null,
     loading : boolean,
     createCategory: (category) => Promise<void>,
     deleteCategoriesFromId: (uuids: Array<string>) => Promise<void>,
@@ -91,9 +92,12 @@ export default function CategoryContextProvider({children}){
         }))
     };
 
+    const activeCategories = categories.filter(category => category.isActive);
+
     return (
         <CategoryContext.Provider value={{
             categories,
+            activeCategories,
             loading,
             createCategory: handleCreateCategory,
             deleteCategoriesFromId,
