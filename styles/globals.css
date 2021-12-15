@@ -43,6 +43,7 @@ body {
   margin-top: 1em;
   margin-bottom: 1em;
 }
+.my-auto{margin-top: auto; margin-bottom: auto;}
 .mx-1 {
   margin-left: 0.5em;
   margin-right: 0.5em;

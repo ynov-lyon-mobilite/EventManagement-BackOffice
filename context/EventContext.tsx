@@ -15,7 +15,7 @@ const FETCH_EVENTS = gql`
                     description
                     endDate
                     participantsCount
-                    prices{amount}
+                    prices{amount, uuid, description}
                     startDate
                     title
                     uuid
@@ -32,7 +32,7 @@ const CREATE_EVENT = gql`
             description
             endDate
             participantsCount
-            prices{amount, description}
+            prices{amount, description, uuid}
             startDate
             title
             uuid
@@ -56,7 +56,8 @@ const UPDATE_EVENT = gql`
 `;
 
 type EventContextType = {
-    events : FetchEventsQuery["events"]["edges"] | null,
+    // @ts-ignore
+    events : FetchEventsQuery["events"]["edges"]["node"] | null,
     loading: boolean,
     fetchEvents: (page: number, take: number) => Promise<void>,
     createEvent: (categoryUuid, title, startDate, endDate, description) => Promise<void>,

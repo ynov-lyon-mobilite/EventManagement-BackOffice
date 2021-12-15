@@ -14,7 +14,6 @@ import {LoadingButton} from "@mui/lab";
 import AddIcon from '@mui/icons-material/Add';
 import {CategoryContext} from "../../context/CategoryContext";
 import {EventContext} from "../../context/EventContext";
-import _ from 'lodash';
 
 const INITIAL_EVENT = {
     categoryUuid: null,
