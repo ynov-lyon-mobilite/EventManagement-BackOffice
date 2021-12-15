@@ -8,11 +8,13 @@ import {
     InputLabel, MenuItem, Select,
     TextField
 } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
 import {useContext, useEffect, useState} from "react";
 import {LoadingButton} from "@mui/lab";
 import AddIcon from '@mui/icons-material/Add';
 import {CategoryContext} from "../../context/CategoryContext";
 import {EventContext} from "../../context/EventContext";
+import _ from 'lodash';
 
 const INITIAL_EVENT = {
     categoryUuid: null,
@@ -136,9 +138,9 @@ export default function EventFormDialog({open, onClose, event = null}){
                         type="submit"
                         loading={submitting}
                         loadingPosition="start"
-                        startIcon={<AddIcon/>}
+                        startIcon={!event ? <AddIcon/> : <EditIcon/>}
                         disabled={!isFormValid}
-                    >Créer</LoadingButton>
+                    >{!event ? 'Créer' : 'Modifier'}</LoadingButton>
                     <Button onClick={onClose}>Annuler</Button>
                 </DialogActions>
             </form>

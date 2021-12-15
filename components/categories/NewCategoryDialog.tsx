@@ -31,7 +31,7 @@ export default function NewCategoryDialog({open, onClose}){
     };
 
     return (
-        <Dialog open={open} onClose={onClose}>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
             <form onSubmit={handleSubmit}>
                 <DialogTitle>Nouvelle Catégorie</DialogTitle>
                 <DialogContent>

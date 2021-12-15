@@ -14,6 +14,7 @@ import usePagination from "../../hooks/usePagination";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useRouter} from "next/router";
 import EditIcon from '@mui/icons-material/Edit';
+import {displayDate} from "../../utils/date";
 
 const headCells = [
     {
@@ -117,8 +118,8 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
                                         </TableCell>
                                         <TableCell align="left">{event.title}</TableCell>
                                         <TableCell align="left">{event.category.name}</TableCell>
-                                        <TableCell align="left">{event.startDate}</TableCell>
-                                        <TableCell align="left">{event.endDate}</TableCell>
+                                        <TableCell align="left">{displayDate(event.startDate)}</TableCell>
+                                        <TableCell align="left">{displayDate(event.endDate)}</TableCell>
                                         <TableCell align="left">{event.participantsCount}</TableCell>
                                         <TableCell align="left" className="d-flex">
                                             <Tooltip title="Voir l'évènement">

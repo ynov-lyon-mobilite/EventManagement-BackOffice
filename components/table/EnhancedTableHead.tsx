@@ -20,6 +20,7 @@ export default function EnhancedTableHead({ onSelectAllClick = null, order = nul
                         align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
+                        className="font-bold"
                     >
                         {headCell.label}
                     </TableCell>
