@@ -76,7 +76,7 @@ export default function EventContextProvider({children}){
         if(data){
             setEvents(data.events.edges ? data.events.edges.map(item => item.node) : []);
         }
-    },[data])
+    },[data]);
 
     const fetchEvents = async (page: number, take: number) => {
         await refetch({variables: {page, take}});

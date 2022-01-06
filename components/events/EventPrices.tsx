@@ -1,7 +1,8 @@
-import {TextField} from "@mui/material";
+import {IconButton, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip} from "@mui/material";
 import {useState} from "react";
 import AddIcon from "@mui/icons-material/Add";
 import {LoadingButton} from "@mui/lab";
+import ClearIcon from '@mui/icons-material/Clear';
 
 export default function EventPrices({event}){
     const [amount, setAmount] = useState('');
@@ -10,14 +11,17 @@ export default function EventPrices({event}){
 
     const handleNewPrice = (e) => {
         e.preventDefault();
-    }
+    };
+
+    const onDeletePrice = (price) => {
+
+    };
 
     return (
         <div>
-            {event.prices.map(price => (<div key={price.uuid}>{price.amount}</div>))}
             <form onSubmit={handleNewPrice} className="d-flex">
                 <TextField
-                    label="Montant"
+                    label="Montant (€)"
                     required
                     type="number"
                     sx={{mr: 2}}
@@ -42,6 +46,42 @@ export default function EventPrices({event}){
                     >Ajouter</LoadingButton>
                 </div>
             </form>
+            <div className="mt-2">
+                {event.prices.length > 0 && <div>{event.prices.length} tarif renseigné(s)</div>}
+                <TableContainer>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Prix</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell/>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {event.prices.map(price => (
+                            <TableRow key={price.uuid}>
+                                <TableCell>
+                                    {price.amount}
+                                </TableCell>
+                                <TableCell>
+                                    {price.description}
+                                </TableCell>
+                                <TableCell>
+                                    <Tooltip title="Supprimer le tarif" placement="top">
+                                        <IconButton onClick={() => onDeletePrice(price)}>
+                                            <ClearIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                        {event.prices.length === 0 && (
+                            <TableRow style={{height: 53}}>
+                                <TableCell colSpan={3}>Aucun tarif</TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </TableContainer>
+            </div>
         </div>
     );
 }
