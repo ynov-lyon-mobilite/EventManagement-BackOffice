@@ -2,15 +2,15 @@ import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 
 export const storeToken = (token: string) => {
-  localStorage.setItem("jwt-auth", token);
+  localStorage.setItem("yvent-backoffice-jwt-auth", token);
 };
 
 export const getToken = () => {
-  return localStorage.getItem("jwt-auth") ?? null;
+  return localStorage.getItem("yvent-backoffice-jwt-auth") ?? null;
 };
 
 export const deleteToken = () => {
-  localStorage.removeItem("jwt-auth");
+  localStorage.removeItem("yvent-backoffice-jwt-auth");
 };
 
 const authLink = setContext((_, { headers }) => {
