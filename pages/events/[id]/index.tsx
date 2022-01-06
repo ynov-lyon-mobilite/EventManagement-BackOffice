@@ -7,6 +7,7 @@ import {displayDate} from "../../../utils/date";
 import EditIcon from '@mui/icons-material/Edit';
 import EventFormDialog from "../../../components/events/EventFormDialog";
 import EventPrices from "../../../components/events/EventPrices";
+import {NextSeo} from "next-seo";
 
 export default function Event(){
     const {events, loading} = useContext(EventContext);
@@ -22,16 +23,24 @@ export default function Event(){
 
     return (
         <Layout>
+            <NextSeo
+                title={`Evènement`}
+                description="Evènement yvent"
+            />
             <Button variant="contained" startIcon={<EditIcon/>} onClick={() => setOpenDialog(true)}>
                 Modifier
             </Button>
-            <div>ID : {event.uuid}</div>
-            <div>Intitulé : {event.title}</div>
-            <div>Catégorie : {event.category.name}</div>
-            <div>Début : {displayDate(event.startDate)}</div>
-            <div>Fin : {event.endDate ? displayDate(event.endDate) : 'Non définie' }</div>
-            <div>Nombre de participants : {event.participantsCount }</div>
-            <div>Description : {event.description ?? 'Aucune description'}</div>
+            <table className="mt-2">
+                <tbody>
+                <tr><td className="font-bold">ID</td><td>{event.uuid}</td></tr>
+                <tr><td className="font-bold">Intitulé</td><td>{event.title}</td></tr>
+                <tr><td className="font-bold">Catégorie</td><td>{event.category.name}</td></tr>
+                <tr><td className="font-bold">Début</td><td>{displayDate(event.startDate)}</td></tr>
+                <tr><td className="font-bold">Fin</td><td>{event.endDate ? displayDate(event.endDate) : 'Non définie' }</td></tr>
+                <tr><td className="font-bold">Nombre de participants</td><td>{event.participantsCount}</td></tr>
+                <tr><td className="font-bold">Description</td><td>{event.description ?? 'Aucune description'}</td></tr>
+                </tbody>
+            </table>
             <EventFormDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
