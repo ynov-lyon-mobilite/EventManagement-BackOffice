@@ -65,7 +65,7 @@ export default function CategoryContextProvider({children}){
         if(data){
             setCategories(data.eventCategories ?? []);
         }
-    },[data])
+    },[data]);
 
     const handleCreateCategory = async (name) => {
         const { data } = await createCategory({ variables: { name } });
@@ -80,7 +80,7 @@ export default function CategoryContextProvider({children}){
             }
             return cat;
         }))
-    }
+    };
 
     const handleRestore = async (category) => {
         await restoreCategory({variables: {uuid: category.uuid}});
