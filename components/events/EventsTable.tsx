@@ -1,6 +1,7 @@
 import {
+    FormControlLabel,
     IconButton,
-    Paper, Table, TableBody,
+    Paper, Switch, Table, TableBody,
     TableCell,
     TableContainer,
     TablePagination,
@@ -74,9 +75,17 @@ const headCells = [
     },
 ];
 
-const EventsTableToolbar = ({ numSelected = 0, onCreation, searchValue, onSearchChange}) => {
+const EventsTableToolbar = (
+    { numSelected = 0, onCreation, searchValue, onSearchChange, displayCanceled, onDisplayCancelChange}
+) => {
     return (
         <EnhancedTableToolbar numSelected={numSelected} title="Evènements">
+            <FormControlLabel
+                control={
+                    <Switch checked={displayCanceled} onChange={onDisplayCancelChange} />
+                }
+                label="Annulés"
+            />
             <TextField
                 value={searchValue}
                 onChange={onSearchChange}
@@ -99,14 +108,15 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
     const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,10);
     const [displayedEvents, setDisplayedEvents] = useState(events);
     const [search, setSearch] = useState('');
+    const [displayCanceled, setDisplayCanceled] = useState(true);
 
     useEffect(() => {
         const loweredSearch = search.length >= 2 ? search.toLowerCase() : '';
         setDisplayedEvents(events.filter(event =>
-            event.title.toLowerCase().includes(loweredSearch) ||
+            (displayCanceled || !event.deletedAt) && (event.title.toLowerCase().includes(loweredSearch) ||
             event.uuid.toLowerCase().includes(loweredSearch) ||
-            event.category.name.toLowerCase().includes(loweredSearch)));
-    }, [events, search])
+            event.category.name.toLowerCase().includes(loweredSearch))));
+    }, [events, search, displayCanceled])
 
     const handleView = (event) => {
         router.push(`/events/${event.uuid}`);
@@ -118,6 +128,8 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
         <div className="w-full">
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EventsTableToolbar
+                    displayCanceled={displayCanceled}
+                    onDisplayCancelChange={(e) => setDisplayCanceled(e.target.checked)}
                     searchValue={search}
                     onSearchChange={(e) => setSearch(e.target.value)}
                     onCreation={onCreation}

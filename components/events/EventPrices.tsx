@@ -47,35 +47,42 @@ export default function EventPrices({event}){
         setDeletingPrices(prev => prev.filter(onePriceId => onePriceId !== price.uuid));
     };
 
+    const isEventDeleted = !!event.deletedAt;
+
     return (
         <div>
-            <form onSubmit={handleNewPrice} className="d-flex">
-                <TextField
-                    label="Montant (€)"
-                    required
-                    type="number"
-                    sx={{mr: 2}}
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                />
-                <TextField
-                    label="Description"
-                    required
-                    sx={{mr: 2}}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                />
-                <div className="my-auto">
-                    <LoadingButton
-                        variant="contained"
-                        type="submit"
-                        loading={submitting}
-                        loadingPosition="start"
-                        startIcon={<AddIcon/>}
-                        disabled={!amount || !description || submitting}
-                    >Ajouter</LoadingButton>
-                </div>
-            </form>
+            {!isEventDeleted && (
+                <>
+                    <div>Nouveau tarif :</div>
+                    <form onSubmit={handleNewPrice} className="d-flex">
+                        <TextField
+                            label="Montant (€)"
+                            required
+                            type="number"
+                            sx={{mr: 2}}
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                        />
+                        <TextField
+                            label="Description"
+                            required
+                            sx={{mr: 2}}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                        <div className="my-auto">
+                            <LoadingButton
+                                variant="contained"
+                                type="submit"
+                                loading={submitting}
+                                loadingPosition="start"
+                                startIcon={<AddIcon/>}
+                                disabled={!amount || !description || submitting}
+                            >Ajouter</LoadingButton>
+                        </div>
+                    </form>
+                </>
+            )}
             {error && (<div className="error">{error}</div>)}
             <div className="mt-2">
                 {event.prices.length > 0 && <div>{event.prices.length} tarif renseigné(s)</div>}
@@ -98,13 +105,15 @@ export default function EventPrices({event}){
                                         {price.description}
                                     </TableCell>
                                     <TableCell>
-                                        <Tooltip title="Supprimer le tarif" placement="top">
-                                            <IconButton
-                                                disabled={deletingPrices.includes(price.uuid)}
-                                                onClick={() => onDeletePrice(price)}
-                                            >
+                                        <Tooltip title={isEventDeleted ? 'Suppression désactivée' : 'Supprimer le tarif'} placement="top">
+                                            <span>
+                                                <IconButton
+                                                    disabled={isEventDeleted || deletingPrices.includes(price.uuid)}
+                                                    onClick={() => onDeletePrice(price)}
+                                                >
                                                 <ClearIcon />
                                             </IconButton>
+                                            </span>
                                         </Tooltip>
                                     </TableCell>
                                 </TableRow>

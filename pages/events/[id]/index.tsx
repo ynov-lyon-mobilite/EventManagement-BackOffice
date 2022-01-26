@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import Layout from "../../../components/layout/Layout";
 import {useContext, useState} from "react";
 import {EventContext} from "../../../context/EventContext";
-import {Button, CircularProgress, Divider} from "@mui/material";
+import {Button, Chip, CircularProgress, Divider} from "@mui/material";
 import {displayDate} from "../../../utils/date";
 import EditIcon from '@mui/icons-material/Edit';
 import EventFormDialog from "../../../components/events/EventFormDialog";
@@ -11,13 +11,15 @@ import {NextSeo} from "next-seo";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ConfirmDialog from "../../../components/layout/ConfirmDialog";
 import {LoadingButton} from "@mui/lab";
+import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 
 export default function Event(){
-    const {events, loading} = useContext(EventContext);
+    const {events, loading, deleteEvent} = useContext(EventContext);
     const router = useRouter();
     const [openDialog, setOpenDialog] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [canceling, setCanceling] = useState(false);
+    const [cancelError, setCancelError] = useState(null);
 
     if(loading) return (<Layout><CircularProgress/></Layout>);
 
@@ -25,26 +27,45 @@ export default function Event(){
 
     if(!event) return <Layout>Aucune donnée</Layout>;
 
+    const onConfirmDeletion = async () => {
+        setCanceling(true);
+        setCancelError(null);
+        try{
+            await deleteEvent(event.uuid);
+        }catch(e){
+            setCancelError(e.toString());
+        }
+        setCanceling(false);
+    }
+
+    const isEventDeleted = !!event.deletedAt;
+
     return (
         <Layout>
             <NextSeo
                 title={`Evènement`}
                 description="Evènement yvent"
             />
-            <div>
-                <Button variant="contained" startIcon={<EditIcon/>} onClick={() => setOpenDialog(true)}>
-                    Modifier
-                </Button>
-                <LoadingButton
-                    className="mx-2"
-                    onClick={() => setOpenConfirmDialog(true)}
-                    loading={canceling}
-                    loadingPosition="start"
-                    startIcon={<RemoveCircleOutlineIcon />}
-                    variant="outlined"
-                >
-                    Annuler
-                </LoadingButton>
+            <div className="d-flex">
+                {isEventDeleted ? (
+                    <Chip icon={<DoNotDisturbOnIcon />} label="Evènement annulé" variant="outlined"/>
+                ) : (
+                    <>
+                        <Button variant="contained" startIcon={<EditIcon/>} onClick={() => setOpenDialog(true)}>
+                            Modifier
+                        </Button>
+                        <LoadingButton
+                            className="mx-2"
+                            onClick={() => setOpenConfirmDialog(true)}
+                            loading={canceling}
+                            loadingPosition="start"
+                            startIcon={<RemoveCircleOutlineIcon />}
+                            variant="outlined"
+                        >
+                            Annuler
+                        </LoadingButton>
+                    </>
+                )}
             </div>
             <table className="mt-2">
                 <tbody>
@@ -65,11 +86,10 @@ export default function Event(){
             <ConfirmDialog
                 open={openConfirmDialog}
                 title="Annuler l'évènement"
-                onConfirm={() => setCanceling(true)}
+                onConfirm={onConfirmDeletion}
                 onClose={() => setOpenConfirmDialog(false)}
             >Confirmez-vous l'annulation de l'évènement ?</ConfirmDialog>
             <Divider sx={{my : 2}}/>
-            <div>Nouveau tarif :</div>
             <EventPrices event={event}/>
         </Layout>
     );

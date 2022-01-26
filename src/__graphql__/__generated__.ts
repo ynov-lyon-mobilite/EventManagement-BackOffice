@@ -320,7 +320,7 @@ export type FetchEventsQueryVariables = Exact<{
 }>;
 
 
-export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }> } }> } };
+export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }> } }> } };
 
 export type CreateNewEventMutationVariables = Exact<{
   categoryUuid: Scalars['String'];
@@ -344,6 +344,13 @@ export type UpdateEventMutationVariables = Exact<{
 
 
 export type UpdateEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, description: string }> } };
+
+export type DeleteEventMutationVariables = Exact<{
+  uuid: Scalars['String'];
+}>;
+
+
+export type DeleteEventMutation = { event: { uuid: string, deletedAt?: any | null | undefined } };
 
 export type CreateNewPriceMutationVariables = Exact<{
   amount: Scalars['Float'];

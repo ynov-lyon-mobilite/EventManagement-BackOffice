@@ -51,6 +51,23 @@ export const UPDATE_EVENT = gql`
     }
 `;
 
+export const DELETE_EVENT = gql`
+    mutation DeleteEvent($uuid: String!){
+        event: deleteEvent(uuid: $uuid){
+            category{name, uuid}
+            description
+            endDate
+            deletedAt
+            nbPlaces
+            participantsCount
+            prices{amount, uuid, description}
+            startDate
+            title
+            uuid
+        }
+    }
+`;
+
 export const CREATE_PRICE = gql`
     mutation CreateNewPrice($amount: Float!, $description: String, $eventUuid: String!){
         price: createPrice(amount: $amount, description: $description, eventUuid: $eventUuid){
