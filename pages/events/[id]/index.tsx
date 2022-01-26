@@ -1,8 +1,8 @@
 import {useRouter} from "next/router";
 import Layout from "../../../components/layout/Layout";
-import {useContext, useState} from "react";
+import {SyntheticEvent, useContext, useState} from "react";
 import {EventContext} from "../../../context/EventContext";
-import {Button, Chip, CircularProgress, Divider} from "@mui/material";
+import {Box, Button, Chip, CircularProgress, Divider, Tab, Tabs} from "@mui/material";
 import {displayDate} from "../../../utils/date";
 import EditIcon from '@mui/icons-material/Edit';
 import EventFormDialog from "../../../components/events/EventFormDialog";
@@ -12,6 +12,10 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ConfirmDialog from "../../../components/layout/ConfirmDialog";
 import {LoadingButton} from "@mui/lab";
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import VpnKeyIcon from "@mui/icons-material/VpnKey";
+import {a11yProps} from "../../../utils/other";
+import TabPanel from "../../../components/layout/TabPanel";
 
 export default function Event(){
     const {events, loading, deleteEvent} = useContext(EventContext);
@@ -20,6 +24,7 @@ export default function Event(){
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [canceling, setCanceling] = useState(false);
     const [cancelError, setCancelError] = useState(null);
+    const [tabValue, setTabValue] = useState(0);
 
     if(loading) return (<Layout><CircularProgress/></Layout>);
 
@@ -37,6 +42,10 @@ export default function Event(){
         }
         setCanceling(false);
     }
+
+    const handleChangeTab = (event: SyntheticEvent, newValue: number) => {
+        setTabValue(newValue);
+    };
 
     const isEventDeleted = !!event.deletedAt;
 
@@ -67,6 +76,7 @@ export default function Event(){
                     </>
                 )}
             </div>
+            {cancelError && (<div className="error">{cancelError}</div>)}
             <table className="mt-2">
                 <tbody>
                 <tr><td className="font-bold">ID</td><td>{event.uuid}</td></tr>
@@ -91,7 +101,20 @@ export default function Event(){
                 onClose={() => setOpenConfirmDialog(false)}
             >Confirmez-vous l'annulation de l'évènement ?</ConfirmDialog>
             <Divider sx={{my : 2}}/>
-            <EventPrices event={event}/>
+            <Box sx={{ width: '100%' }}>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                    <Tabs value={tabValue} onChange={handleChangeTab} aria-label="event tabs">
+                        <Tab icon={<ManageAccountsIcon />} iconPosition="start" label="Tarifs" {...a11yProps(0)} />
+                        <Tab icon={<VpnKeyIcon />} iconPosition="start" label="Réservations" {...a11yProps(1)} />
+                    </Tabs>
+                </Box>
+                <TabPanel value={tabValue} id="event" index={0}>
+                    <EventPrices event={event}/>
+                </TabPanel>
+                <TabPanel value={tabValue} id="event" index={1}>
+                    liste des réservations
+                </TabPanel>
+            </Box>
         </Layout>
     );
 }

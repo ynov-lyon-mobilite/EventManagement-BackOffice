@@ -1,5 +1,5 @@
 import Layout from "../../components/layout/Layout";
-import {ReactNode, SyntheticEvent, useEffect, useState} from "react";
+import {SyntheticEvent, useEffect, useState} from "react";
 import {NextSeo} from "next-seo";
 import {Alert, Box, Collapse, IconButton, Tab, Tabs, Typography} from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
@@ -8,13 +8,8 @@ import GeneralProfileForm from "../../components/profile/GeneralProfileForm";
 import CloseIcon from '@mui/icons-material/Close';
 import ProgressLinear from "../../components/progress/ProgressLinear";
 import PasswordForm from "../../components/profile/PasswordForm";
-
-function a11yProps(index: number) {
-    return {
-        id: `profile-tab-${index}`,
-        'aria-controls': `profile-tabpanel-${index}`,
-    };
-}
+import {a11yProps} from "../../utils/other";
+import TabPanel from "../../components/layout/TabPanel";
 
 export default function Profile() {
     const [value, setValue] = useState(0);
@@ -53,10 +48,10 @@ export default function Profile() {
                         <Tab icon={<VpnKeyIcon />} iconPosition="start" label="Mot de passe" {...a11yProps(1)} />
                     </Tabs>
                 </Box>
-                <TabPanel value={value} index={0}>
+                <TabPanel value={value} id="profile" index={0}>
                     <GeneralProfileForm showAlert={showAlert}/>
                 </TabPanel>
-                <TabPanel value={value} index={1}>
+                <TabPanel value={value} id="profile" index={1}>
                     <PasswordForm showAlert={showAlert}/>
                 </TabPanel>
             </Box>
@@ -79,31 +74,5 @@ export default function Profile() {
                 </Alert>
             </Collapse>
         </Layout>
-    );
-}
-
-interface TabPanelProps {
-    children?: ReactNode;
-    index: number;
-    value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`profile-tabpanel-${index}`}
-            aria-labelledby={`profile-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    <Typography component="div">{children}</Typography>
-                </Box>
-            )}
-        </div>
     );
 }

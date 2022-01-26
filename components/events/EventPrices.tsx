@@ -85,7 +85,7 @@ export default function EventPrices({event}){
             )}
             {error && (<div className="error">{error}</div>)}
             <div className="mt-2">
-                {event.prices.length > 0 && <div>{event.prices.length} tarif renseigné(s)</div>}
+                {event.prices.length > 0 && <div>{event.prices.length} tarif(s) renseigné(s)</div>}
                 <TableContainer>
                     <Table>
                         <TableHead>

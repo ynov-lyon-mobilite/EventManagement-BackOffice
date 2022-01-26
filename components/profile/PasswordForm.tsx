@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import {UserContext} from "../../context/UserContext";
 import {LoadingButton} from "@mui/lab";
-import {Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput} from "@mui/material";
+import {Button, FormControl, InputLabel, OutlinedInput} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 export default function PasswordForm({ showAlert = (text: string) => {} }){
