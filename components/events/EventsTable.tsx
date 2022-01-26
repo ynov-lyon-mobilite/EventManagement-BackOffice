@@ -174,11 +174,13 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
                                                     <VisibilityIcon/>
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title="Modifier l'évènement">
-                                                <IconButton onClick={(e) => {e.stopPropagation();onEdition(event)}}>
-                                                    <EditIcon/>
-                                                </IconButton>
-                                            </Tooltip>
+                                            {!event.deletedAt && (
+                                                <Tooltip title="Modifier l'évènement">
+                                                    <IconButton onClick={(e) => {e.stopPropagation();onEdition(event)}}>
+                                                        <EditIcon/>
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 );

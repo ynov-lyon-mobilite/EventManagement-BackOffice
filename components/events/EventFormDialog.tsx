@@ -18,6 +18,7 @@ import {EventContext} from "../../context/EventContext";
 const INITIAL_EVENT = {
     categoryUuid: null,
     title: '',
+    nbPlaces: '',
     description: null,
     startDate: null,
     endDate: null,
@@ -46,13 +47,14 @@ export default function EventFormDialog({open, onClose, event = null}){
         e.preventDefault();
         setSubmitting(true);
         setError(null);
+        console.log(newEvent);
         try{
             let resultEvent;
             if(!event){
-                await createEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, newEvent.description);
+                await createEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, newEvent.description, parseInt(newEvent.nbPlaces));
                 resultEvent = INITIAL_EVENT;
             }else{
-                resultEvent = await updateEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, event.uuid, newEvent.description);
+                resultEvent = await updateEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, event.uuid, newEvent.description, parseInt(newEvent.nbPlaces));
                 resultEvent = convertEventToForm(resultEvent);
             }
             onClose();
@@ -85,20 +87,31 @@ export default function EventFormDialog({open, onClose, event = null}){
                         value={newEvent.title ?? ''}
                         onChange={handleChange('title')}
                     />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="category-select">Catégorie *</InputLabel>
-                        <Select
-                            labelId="category-select"
-                            label="Catégorie"
+                    <div className="d-flex">
+                        <FormControl sx={{ flex:'1',mr:2 }} fullWidth margin="normal">
+                            <InputLabel id="category-select">Catégorie *</InputLabel>
+                            <Select
+                                labelId="category-select"
+                                label="Catégorie"
+                                required
+                                value={newEvent.categoryUuid ?? ''}
+                                onChange={handleChange('categoryUuid')}
+                            >
+                                {activeCategories.map(category => (
+                                    <MenuItem key={category.uuid} value={category.uuid}>{category.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <TextField
+                            sx={{ flex:'1' }}
+                            label="Nombre de place max"
                             required
-                            value={newEvent.categoryUuid ?? ''}
-                            onChange={handleChange('categoryUuid')}
-                        >
-                            {activeCategories.map(category => (
-                                <MenuItem key={category.uuid} value={category.uuid}>{category.name}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                            type="number"
+                            margin="normal"
+                            value={newEvent.nbPlaces ?? ''}
+                            onChange={handleChange('nbPlaces')}
+                        />
+                    </div>
                     <div className="d-flex">
                         <TextField
                             required

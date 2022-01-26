@@ -2,7 +2,7 @@ import {gql} from "@apollo/client";
 
 export const FETCH_EVENTS = gql`
     query FetchEvents($currentPage: Int, $take: Int){
-        events(page: $currentPage, take: $take, deleted: true){
+        events(page: $currentPage, take: $take, deleted: true, includePastEvents: true){
             edges{
                 node{
                     category{name, uuid}
@@ -22,13 +22,15 @@ export const FETCH_EVENTS = gql`
 `;
 
 export const CREATE_EVENT = gql`
-    mutation CreateNewEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $endDate: Date, $description: String){
-        event: createEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, endDate: $endDate, description: $description){
+    mutation CreateNewEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $endDate: Date, $description: String, $nbPlaces: Int = 0){
+        event: createEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, endDate: $endDate, description: $description, nbPlaces: $nbPlaces){
             category{name, uuid}
             description
             endDate
+            deletedAt
+            nbPlaces
             participantsCount
-            prices{amount, description, uuid}
+            prices{amount, uuid, description}
             startDate
             title
             uuid
@@ -37,13 +39,15 @@ export const CREATE_EVENT = gql`
 `;
 
 export const UPDATE_EVENT = gql`
-    mutation UpdateEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $uuid: String!, $endDate: Date, $description: String){
-        event: updateEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, uuid: $uuid, endDate: $endDate, description: $description){
+    mutation UpdateEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $uuid: String!, $endDate: Date, $description: String, $nbPlaces: Int = 0){
+        event: updateEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, uuid: $uuid, endDate: $endDate, description: $description, nbPlaces: $nbPlaces){
             category{name, uuid}
             description
             endDate
+            deletedAt
+            nbPlaces
             participantsCount
-            prices{amount, description}
+            prices{amount, uuid, description}
             startDate
             title
             uuid

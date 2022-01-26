@@ -74,6 +74,7 @@ export default function Event(){
                 <tr><td className="font-bold">Catégorie</td><td>{event.category.name}</td></tr>
                 <tr><td className="font-bold">Début</td><td>{displayDate(event.startDate)}</td></tr>
                 <tr><td className="font-bold">Fin</td><td>{event.endDate ? displayDate(event.endDate) : 'Non définie' }</td></tr>
+                <tr><td className="font-bold">Nb max de places</td><td>{event.nbPlaces}</td></tr>
                 <tr><td className="font-bold">Nombre de participants</td><td>{event.participantsCount}</td></tr>
                 <tr><td className="font-bold">Description</td><td>{event.description ?? 'Aucune description'}</td></tr>
                 </tbody>
