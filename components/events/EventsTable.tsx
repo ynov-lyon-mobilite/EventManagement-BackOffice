@@ -4,7 +4,7 @@ import {
     TableCell,
     TableContainer,
     TablePagination,
-    TableRow,
+    TableRow, TextField,
     Tooltip,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,6 +15,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import {useRouter} from "next/router";
 import EditIcon from '@mui/icons-material/Edit';
 import {displayDate} from "../../utils/date";
+import {useEffect, useState} from "react";
 
 const headCells = [
     {
@@ -61,9 +62,17 @@ const headCells = [
     },
 ];
 
-const EventsTableToolbar = ({ numSelected = 0, onCreation }) => {
+const EventsTableToolbar = ({ numSelected = 0, onCreation, searchValue, onSearchChange}) => {
     return (
         <EnhancedTableToolbar numSelected={numSelected} title="Evènements">
+            <TextField
+                value={searchValue}
+                onChange={onSearchChange}
+                type="text"
+                size="small"
+                className="mr-2"
+                placeholder="Rechercher"
+            />
             <Tooltip title="Nouvel évènement">
                 <IconButton onClick={onCreation}>
                     <AddIcon />
@@ -76,6 +85,16 @@ const EventsTableToolbar = ({ numSelected = 0, onCreation }) => {
 export default function EventsTable({events = [], onCreation = () => {}, onEdition = (event) => {}}) {
     const router = useRouter();
     const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,10);
+    const [displayedEvents, setDisplayedEvents] = useState(events);
+    const [search, setSearch] = useState('');
+
+    useEffect(() => {
+        const loweredSearch = search.toLowerCase();
+        setDisplayedEvents(events.filter(event =>
+            event.title.toLowerCase().includes(loweredSearch) ||
+            event.uuid.toLowerCase().includes(loweredSearch) ||
+            event.category.name.toLowerCase().includes(loweredSearch)));
+    }, [events, search])
 
     const handleView = (event) => {
         router.push(`/events/${event.uuid}`);
@@ -87,6 +106,8 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
         <div className="w-full">
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EventsTableToolbar
+                    searchValue={search}
+                    onSearchChange={(e) => setSearch(e.target.value)}
                     onCreation={onCreation}
                 />
                 <TableContainer>
@@ -100,7 +121,7 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
                             headCells={headCells}
                         />
                         <TableBody>
-                            {events.slice(initialIndex, initialIndex + rowsPerPage).map((event, index) => {
+                            {displayedEvents.slice(initialIndex, initialIndex + rowsPerPage).map((event, index) => {
                                 const labelId = `enhanced-table-checkbox-${index}`;
 
                                 return (
