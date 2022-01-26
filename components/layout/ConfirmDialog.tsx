@@ -27,8 +27,8 @@ export default function ConfirmDialog({open, title, children, onConfirm = () => 
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant="contained" onClick={handleConfirm}>Confirm</Button>
-                <Button variant="outlined" onClick={handleDismiss} autoFocus>Dismiss</Button>
+                <Button variant="contained" onClick={handleConfirm}>Oui</Button>
+                <Button variant="outlined" onClick={handleDismiss} autoFocus>Non</Button>
             </DialogActions>
         </Dialog>
     );

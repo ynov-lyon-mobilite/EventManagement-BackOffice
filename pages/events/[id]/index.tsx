@@ -69,7 +69,7 @@ export default function Event(){
                 onClose={() => setOpenConfirmDialog(false)}
             >Confirmez-vous l'annulation de l'évènement ?</ConfirmDialog>
             <Divider sx={{my : 2}}/>
-            <div>Prix :</div>
+            <div>Nouveau tarif :</div>
             <EventPrices event={event}/>
         </Layout>
     );
