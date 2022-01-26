@@ -8,11 +8,14 @@ import EditIcon from '@mui/icons-material/Edit';
 import EventFormDialog from "../../../components/events/EventFormDialog";
 import EventPrices from "../../../components/events/EventPrices";
 import {NextSeo} from "next-seo";
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import ConfirmDialog from "../../../components/layout/ConfirmDialog";
 
 export default function Event(){
     const {events, loading} = useContext(EventContext);
     const router = useRouter();
     const [openDialog, setOpenDialog] = useState(false);
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
     if(loading) return (<CircularProgress/>);
 
@@ -26,9 +29,15 @@ export default function Event(){
                 title={`Evènement`}
                 description="Evènement yvent"
             />
-            <Button variant="contained" startIcon={<EditIcon/>} onClick={() => setOpenDialog(true)}>
-                Modifier
-            </Button>
+            <div>
+                <Button variant="contained" startIcon={<EditIcon/>} onClick={() => setOpenDialog(true)}>
+                    Modifier
+                </Button>
+                <Button className="mx-2" variant="outlined" startIcon={<RemoveCircleOutlineIcon/>}
+                        onClick={() => setOpenConfirmDialog(true)}>
+                    Annuler
+                </Button>
+            </div>
             <table className="mt-2">
                 <tbody>
                 <tr><td className="font-bold">ID</td><td>{event.uuid}</td></tr>
@@ -45,6 +54,12 @@ export default function Event(){
                 onClose={() => setOpenDialog(false)}
                 event={event}
             />
+            <ConfirmDialog
+                open={openConfirmDialog}
+                title="Annuler l'évènement"
+                onConfirm={() => {}}
+                onClose={() => setOpenConfirmDialog(false)}
+            >Confirmez-vous l'annulation de l'évènement ?</ConfirmDialog>
             <Divider sx={{my : 2}}/>
             <div>Prix :</div>
             <EventPrices event={event}/>
