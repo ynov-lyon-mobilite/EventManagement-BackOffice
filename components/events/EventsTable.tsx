@@ -52,7 +52,19 @@ const headCells = [
         id: 'participantCount',
         numeric: false,
         disablePadding: false,
-        label: 'Nombre de participants',
+        label: 'Nbr participants',
+    },
+    {
+        id: 'nbPlaces',
+        numeric: false,
+        disablePadding: false,
+        label: 'Places totales',
+    },
+    {
+        id: 'deleted',
+        numeric: false,
+        disablePadding: false,
+        label: '',
     },
     {
         id: 'action',
@@ -89,7 +101,7 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
     const [search, setSearch] = useState('');
 
     useEffect(() => {
-        const loweredSearch = search.toLowerCase();
+        const loweredSearch = search.length >= 2 ? search.toLowerCase() : '';
         setDisplayedEvents(events.filter(event =>
             event.title.toLowerCase().includes(loweredSearch) ||
             event.uuid.toLowerCase().includes(loweredSearch) ||
@@ -142,6 +154,8 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
                                         <TableCell align="left">{displayDate(event.startDate)}</TableCell>
                                         <TableCell align="left">{displayDate(event.endDate)}</TableCell>
                                         <TableCell align="left">{event.participantsCount}</TableCell>
+                                        <TableCell align="left">{event.nbPlaces}</TableCell>
+                                        <TableCell align="left">{!!event.deletedAt ? 'annulé' : ''}</TableCell>
                                         <TableCell align="left" className="d-flex">
                                             <Tooltip title="Voir l'évènement">
                                                 <IconButton onClick={(e) => {e.stopPropagation();handleView(event)}}>

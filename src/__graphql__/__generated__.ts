@@ -30,11 +30,14 @@ export type Cursor = {
 
 export type Event = {
   category: EventCategory;
+  deletedAt?: Maybe<Scalars['Date']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
+  nbPlaces: Scalars['Int'];
   participants: UserConnection;
   participantsCount: Scalars['Int'];
   prices: Array<Price>;
+  restPlaces: Scalars['Int'];
   startDate: Scalars['Date'];
   title: Scalars['String'];
   uuid: Scalars['String'];
@@ -95,6 +98,7 @@ export type MutationCreateEventArgs = {
   categoryUuid: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
+  nbPlaces?: Maybe<Scalars['Int']>;
   startDate: Scalars['Date'];
   title: Scalars['String'];
 };
@@ -229,6 +233,7 @@ export type QueryEventParticipantsArgs = {
 
 export type QueryEventsArgs = {
   cursor?: Maybe<Scalars['CursorID']>;
+  deleted?: Maybe<Scalars['Boolean']>;
   page?: Maybe<Scalars['Int']>;
   take?: Maybe<Scalars['Int']>;
 };

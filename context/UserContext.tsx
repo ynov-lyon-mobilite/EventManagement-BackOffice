@@ -1,6 +1,6 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import { useQuery, gql, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import {
   FetchCurrentUserQuery,
   LoginMutation,
@@ -8,43 +8,9 @@ import {
 } from "../src/__graphql__/__generated__";
 import { useRouter } from "next/router";
 import { deleteToken, storeToken } from "../apollo/apollo-client";
+import {FETCH_USER, LOGIN_USER, UPDATE_MAIN_USER} from "../utils/queries/User";
 
 export const UserContext = React.createContext<UserContextType>(undefined);
-
-const FETCH_USER = gql`
-  query FetchCurrentUser {
-    user_infos {
-      displayName
-      email
-      uuid
-    }
-  }
-`;
-
-const LOGIN_USER = gql`
-  mutation Login($password: String!, $email: String!) {
-    loggedUser: login(password: $password, email: $email) {
-      user {
-        displayName
-        email
-        joinedEvents {
-          title
-        }
-        roles
-        uuid
-      }
-      jwt
-    }
-  }
-`;
-
-const UPDATE_MAIN_USER = gql`
-  mutation updateMainUser($displayName: String, $email: String, $password: String, $uuid: String!){
-    updateUser(displayName: $displayName, email: $email, password: $password, uuid: $uuid){
-      uuid
-    }
-  }
-`;
 
 type UserContextType = {
   user: FetchCurrentUserQuery["user_infos"] | null;

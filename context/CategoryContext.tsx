@@ -1,11 +1,12 @@
 import {createContext, useEffect, useState} from "react";
-import {gql, useMutation, useQuery} from "@apollo/client";
+import {useMutation, useQuery} from "@apollo/client";
 import {
     CreateNewCategoryMutation, CreateNewCategoryMutationVariables,
     DeleteCategoriesMutation,
     DeleteCategoriesMutationVariables,
     FetchCategoriesQuery, RestoreCategoryMutation, RestoreCategoryMutationVariables
 } from "../src/__graphql__/__generated__";
+import {CREATE_CATEGORY, DELETE_CATEGORIES, FETCH_CATEGORIES, RESTORE_CATEGORY} from "../utils/queries/Category";
 
 type CategoryContextType = {
     categories : FetchCategoriesQuery["eventCategories"] | null,
@@ -15,42 +16,6 @@ type CategoryContextType = {
     deleteCategoriesFromId: (uuids: Array<string>) => Promise<void>,
     restoreCategory: (uuid: string) => Promise<void>,
 }
-
-const FETCH_CATEGORIES = gql`
-    query FetchCategories {
-        eventCategories{
-            isActive
-            name
-            uuid
-        }
-    }
-`;
-
-const CREATE_CATEGORY = gql`
-    mutation CreateNewCategory($name: String!){
-        category: createEventCategory(name: $name){
-            uuid
-            name
-            isActive
-        }
-    }
-`;
-
-const DELETE_CATEGORIES = gql`
-    mutation DeleteCategories($uuids: [String!]!){
-        deleteEventCategories(uuids: $uuids){
-            uuid
-        }
-    }
-`;
-
-const RESTORE_CATEGORY = gql`
-    mutation RestoreCategory($uuid: String!){
-        restoreEventCategory(uuid: $uuid){
-            uuid
-        }
-    }
-`;
 
 export const CategoryContext = createContext<CategoryContextType>(undefined);
 
