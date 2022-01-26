@@ -10,14 +10,16 @@ import EventPrices from "../../../components/events/EventPrices";
 import {NextSeo} from "next-seo";
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import ConfirmDialog from "../../../components/layout/ConfirmDialog";
+import {LoadingButton} from "@mui/lab";
 
 export default function Event(){
     const {events, loading} = useContext(EventContext);
     const router = useRouter();
     const [openDialog, setOpenDialog] = useState(false);
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    const [canceling, setCanceling] = useState(false);
 
-    if(loading) return (<CircularProgress/>);
+    if(loading) return (<Layout><CircularProgress/></Layout>);
 
     const event = events.find(evt => evt.uuid === router.query.id);
 
@@ -33,10 +35,16 @@ export default function Event(){
                 <Button variant="contained" startIcon={<EditIcon/>} onClick={() => setOpenDialog(true)}>
                     Modifier
                 </Button>
-                <Button className="mx-2" variant="outlined" startIcon={<RemoveCircleOutlineIcon/>}
-                        onClick={() => setOpenConfirmDialog(true)}>
+                <LoadingButton
+                    className="mx-2"
+                    onClick={() => setOpenConfirmDialog(true)}
+                    loading={canceling}
+                    loadingPosition="start"
+                    startIcon={<RemoveCircleOutlineIcon />}
+                    variant="outlined"
+                >
                     Annuler
-                </Button>
+                </LoadingButton>
             </div>
             <table className="mt-2">
                 <tbody>
@@ -57,7 +65,7 @@ export default function Event(){
             <ConfirmDialog
                 open={openConfirmDialog}
                 title="Annuler l'évènement"
-                onConfirm={() => {}}
+                onConfirm={() => setCanceling(true)}
                 onClose={() => setOpenConfirmDialog(false)}
             >Confirmez-vous l'annulation de l'évènement ?</ConfirmDialog>
             <Divider sx={{my : 2}}/>
