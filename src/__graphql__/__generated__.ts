@@ -22,11 +22,6 @@ export type Booking = {
   uuid: Scalars['String'];
 };
 
-export type CreatePriceInput = {
-  amount: Scalars['Float'];
-  description: Scalars['String'];
-};
-
 export type Cursor = {
   current?: Maybe<Scalars['CursorID']>;
   take: Scalars['Int'];
@@ -77,6 +72,7 @@ export type Mutation = {
   deleteEvent: Event;
   deleteEventCategories: Array<EventCategory>;
   deleteEventCategory: EventCategory;
+  deletePrice: Price;
   deleteUser: User;
   /** Pay to join the event */
   joinEvent: Scalars['String'];
@@ -99,7 +95,6 @@ export type MutationCreateEventArgs = {
   categoryUuid: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
-  prices?: Maybe<Array<CreatePriceInput>>;
   startDate: Scalars['Date'];
   title: Scalars['String'];
 };
@@ -128,6 +123,11 @@ export type MutationDeleteEventCategoriesArgs = {
 
 
 export type MutationDeleteEventCategoryArgs = {
+  uuid: Scalars['String'];
+};
+
+
+export type MutationDeletePriceArgs = {
   uuid: Scalars['String'];
 };
 
@@ -167,7 +167,6 @@ export type MutationUpdateEventArgs = {
   categoryUuid?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
-  prices?: Maybe<Array<CreatePriceInput>>;
   startDate?: Maybe<Scalars['Date']>;
   title?: Maybe<Scalars['String']>;
   uuid: Scalars['String'];
@@ -252,6 +251,7 @@ export enum Role {
 
 export type Subscription = {
   eventCreated: User;
+  newEvent: Event;
 };
 
 export type Success = {
@@ -315,7 +315,7 @@ export type FetchEventsQueryVariables = Exact<{
 }>;
 
 
-export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number }> } }> } };
+export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }> } }> } };
 
 export type CreateNewEventMutationVariables = Exact<{
   categoryUuid: Scalars['String'];
@@ -326,7 +326,7 @@ export type CreateNewEventMutationVariables = Exact<{
 }>;
 
 
-export type CreateNewEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, description: string }> } };
+export type CreateNewEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, description: string, uuid: string }> } };
 
 export type UpdateEventMutationVariables = Exact<{
   categoryUuid: Scalars['String'];
@@ -339,6 +339,22 @@ export type UpdateEventMutationVariables = Exact<{
 
 
 export type UpdateEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, description: string }> } };
+
+export type CreateNewPriceMutationVariables = Exact<{
+  amount: Scalars['Float'];
+  description?: Maybe<Scalars['String']>;
+  eventUuid: Scalars['String'];
+}>;
+
+
+export type CreateNewPriceMutation = { price: { amount: number, description: string, uuid: string } };
+
+export type DeletePriceMutationVariables = Exact<{
+  uuid: Scalars['String'];
+}>;
+
+
+export type DeletePriceMutation = { price: { uuid: string } };
 
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 

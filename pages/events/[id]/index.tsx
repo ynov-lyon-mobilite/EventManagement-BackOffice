@@ -17,7 +17,6 @@ export default function Event(){
     if(loading) return (<CircularProgress/>);
 
     const event = events.find(evt => evt.uuid === router.query.id);
-    console.log(event);
 
     if(!event) return <Layout>Aucune donnée</Layout>;
 

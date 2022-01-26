@@ -3,7 +3,13 @@ import {gql, useMutation, useQuery} from "@apollo/client";
 import {
     CreateNewEventMutation,
     CreateNewEventMutationVariables,
-    FetchEventsQuery, UpdateEventMutation, UpdateEventMutationVariables
+    CreateNewPriceMutation,
+    CreateNewPriceMutationVariables,
+    DeletePriceMutation,
+    DeletePriceMutationVariables,
+    FetchEventsQuery,
+    UpdateEventMutation,
+    UpdateEventMutationVariables
 } from "../src/__graphql__/__generated__";
 
 const FETCH_EVENTS = gql`
@@ -55,6 +61,24 @@ const UPDATE_EVENT = gql`
     }
 `;
 
+const CREATE_PRICE = gql`
+    mutation CreateNewPrice($amount: Float!, $description: String, $eventUuid: String!){
+        price: createPrice(amount: $amount, description: $description, eventUuid: $eventUuid){
+            amount
+            description
+            uuid
+        }
+    }
+`;
+
+const DELETE_PRICE = gql`
+    mutation DeletePrice($uuid: String!){
+        price: deletePrice(uuid: $uuid){
+            uuid
+        }
+    }
+`;
+
 type EventContextType = {
     // @ts-ignore
     events : FetchEventsQuery["events"]["edges"]["node"] | null,
@@ -62,6 +86,8 @@ type EventContextType = {
     fetchEvents: (page: number, take: number) => Promise<void>,
     createEvent: (categoryUuid, title, startDate, endDate, description) => Promise<void>,
     updateEvent: (categoryUuid, title, startDate, endDate, uuid, description) => Promise<UpdateEventMutation["event"]>,
+    createPrice: (amount, description, eventUuid) => Promise<void>,
+    deletePrice: (uuid, eventUuid) => Promise<void>,
 };
 
 export const EventContext = createContext<EventContextType>(undefined);
@@ -70,6 +96,8 @@ export default function EventContextProvider({children}){
     const { data, loading, refetch } = useQuery<FetchEventsQuery>(FETCH_EVENTS);
     const [createEvent] = useMutation<CreateNewEventMutation, CreateNewEventMutationVariables>(CREATE_EVENT);
     const [updateEvent] = useMutation<UpdateEventMutation, UpdateEventMutationVariables>(UPDATE_EVENT);
+    const [createPrice] = useMutation<CreateNewPriceMutation, CreateNewPriceMutationVariables>(CREATE_PRICE);
+    const [deletePrice] = useMutation<DeletePriceMutation, DeletePriceMutationVariables>(DELETE_PRICE);
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
@@ -96,13 +124,31 @@ export default function EventContextProvider({children}){
         return data.event;
     };
 
+    const handleNewPrice = async(amount, description, eventUuid) => {
+        const { data } = await createPrice({ variables: { amount, description, eventUuid } });
+        setEvents(prev => prev.map(event => {
+            if(event.uuid === eventUuid) return {...event, prices: [...event.prices, data.price]};
+            return event;
+        }));
+    }
+
+    const handleDeletePrice = async(uuid, eventUuid) => {
+        await deletePrice({ variables: { uuid } });
+        setEvents(prev => prev.map(event => {
+            if(event.uuid === eventUuid) return {...event, prices: event.prices.filter(price => price.uuid !== uuid)};
+            return event;
+        }));
+    }
+
     return (
         <EventContext.Provider value={{
             events,
             loading,
             fetchEvents,
             createEvent: handleCreateEvent,
-            updateEvent: handleUpdateEvent
+            updateEvent: handleUpdateEvent,
+            createPrice: handleNewPrice,
+            deletePrice: handleDeletePrice
         }}>
             {children}
         </EventContext.Provider>
