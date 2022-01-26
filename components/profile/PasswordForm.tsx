@@ -6,18 +6,24 @@ import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 export default function PasswordForm({ showAlert = (text: string) => {} }){
     const {updatePassword} = useContext(UserContext);
+    const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
+    const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(newPassword !== newPasswordConfirm) {
+            setError('La confirmation est inexacte');
+            return;
+        }
         setSubmitting(true);
         setError(null);
         try{
-            await updatePassword(newPassword);
-            setNewPassword("");
+            await updatePassword(newPassword, oldPassword);
+            handleReset();
             showAlert("Changement du mot de passe effectué");
         }catch(e){
             console.error(e);
@@ -28,39 +34,58 @@ export default function PasswordForm({ showAlert = (text: string) => {} }){
 
     const handleReset = () => {
         setNewPassword("");
+        setOldPassword("");
+        setNewPasswordConfirm("");
     };
 
     const handleClickShowPassword = () => {
         setShowPassword(prev => !prev);
     };
 
-    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-    };
+    const areFieldFilled = !!newPassword || !!oldPassword || !!newPasswordConfirm;
 
     return (
         <form onSubmit={handleSubmit}>
+            <div className="d-flex">
+                <Button onClick={handleClickShowPassword} startIcon={showPassword ? <VisibilityOff /> : <Visibility />}>
+                    {showPassword ? 'Cacher' : 'Afficher'} les mots de passe
+                </Button>
+            </div>
             <div>
-                <FormControl sx={{ width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Nouveau mot de passe</InputLabel>
+                <FormControl sx={{ width: '25ch' }} variant="outlined" margin="normal">
+                    <InputLabel htmlFor="oldpassword">Ancien mot de passe</InputLabel>
                     <OutlinedInput
                         required
-                        id="outlined-adornment-password"
+                        id="oldpassword"
+                        type={showPassword ? 'text' : 'password'}
+                        value={oldPassword}
+                        onChange={(e) => {setOldPassword(e.target.value)}}
+                        label="Password"
+                    />
+                </FormControl>
+            </div>
+            <div>
+                <FormControl sx={{ width: '25ch' }} variant="outlined" margin="normal">
+                    <InputLabel htmlFor="newpassword">Nouveau mot de passe</InputLabel>
+                    <OutlinedInput
+                        required
+                        id="newpassword"
                         type={showPassword ? 'text' : 'password'}
                         value={newPassword}
                         onChange={(e) => {setNewPassword(e.target.value)}}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
+                        label="Password"
+                    />
+                </FormControl>
+            </div>
+            <div>
+                <FormControl sx={{ width: '25ch' }} variant="outlined" margin="normal">
+                    <InputLabel htmlFor="confirm-newpassword">Confirmez le mot de passe</InputLabel>
+                    <OutlinedInput
+                        required
+                        id="confirm-newpassword"
+                        type={showPassword ? 'text' : 'password'}
+                        value={newPasswordConfirm}
+                        onChange={(e) => {setNewPasswordConfirm(e.target.value)}}
                         label="Password"
                     />
                 </FormControl>
@@ -74,7 +99,7 @@ export default function PasswordForm({ showAlert = (text: string) => {} }){
                     className="font-bold"
                     disabled={!newPassword}
                 >Enregistrer</LoadingButton>
-                {!!newPassword && <Button className="font-bold ml-2" onClick={handleReset}>Annuler</Button>}
+                {areFieldFilled && <Button className="font-bold ml-2" onClick={handleReset}>Annuler</Button>}
             </div>
         </form>
     );

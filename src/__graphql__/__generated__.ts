@@ -68,6 +68,7 @@ export type EventNode = {
 };
 
 export type Mutation = {
+  changePassword: Scalars['Boolean'];
   createBooking: Booking;
   createEvent: Event;
   createEventCategory: EventCategory;
@@ -86,6 +87,12 @@ export type Mutation = {
   updateEvent: Event;
   updateEventCategory: EventCategory;
   updateUser: User;
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  oldPassword: Scalars['String'];
 };
 
 
@@ -187,7 +194,6 @@ export type MutationUpdateEventCategoryArgs = {
 export type MutationUpdateUserArgs = {
   displayName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
   roles?: Maybe<Array<Role>>;
   uuid: Scalars['String'];
 };
@@ -388,9 +394,16 @@ export type LoginMutation = { loggedUser: { jwt: string, user: { displayName: st
 export type UpdateMainUserMutationVariables = Exact<{
   displayName?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
   uuid: Scalars['String'];
 }>;
 
 
 export type UpdateMainUserMutation = { updateUser: { uuid: string } };
+
+export type ChangePasswordMutationVariables = Exact<{
+  newPassword: Scalars['String'];
+  oldPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = { changePassword: boolean };

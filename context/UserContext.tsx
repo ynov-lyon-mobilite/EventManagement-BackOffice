@@ -2,13 +2,14 @@ import React, { PropsWithChildren, useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { useQuery, useMutation } from "@apollo/client";
 import {
-  FetchCurrentUserQuery,
-  LoginMutation,
-  LoginMutationVariables, UpdateMainUserMutation, UpdateMainUserMutationVariables,
+    ChangePasswordMutation, ChangePasswordMutationVariables,
+    FetchCurrentUserQuery,
+    LoginMutation,
+    LoginMutationVariables, UpdateMainUserMutation, UpdateMainUserMutationVariables,
 } from "../src/__graphql__/__generated__";
 import { useRouter } from "next/router";
 import { deleteToken, storeToken } from "../apollo/apollo-client";
-import {FETCH_USER, LOGIN_USER, UPDATE_MAIN_USER} from "../utils/queries/User";
+import {CHANGE_PASSWORD, FETCH_USER, LOGIN_USER, UPDATE_MAIN_USER} from "../utils/queries/User";
 
 export const UserContext = React.createContext<UserContextType>(undefined);
 
@@ -18,7 +19,7 @@ type UserContextType = {
   login: (email: string, password: string) => Promise<void>;
   loading: boolean;
   updateUser: (displayName: string, email:string) => Promise<void>;
-  updatePassword: (password:string) => Promise<void>
+  updatePassword: (newPassword:string, oldPassword:string) => Promise<void>
 };
 
 export default function UserContextProvider({
@@ -29,6 +30,7 @@ export default function UserContextProvider({
   const [loading, setLoading] = useState(true);
   const { data: loggedUser, error } = useQuery<FetchCurrentUserQuery>(FETCH_USER);
   const [updateMainUser] = useMutation<UpdateMainUserMutation, UpdateMainUserMutationVariables>(UPDATE_MAIN_USER);
+  const [changePassword] = useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(CHANGE_PASSWORD);
   const [loginUser] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_USER);
 
   useEffect(() => {
@@ -61,8 +63,8 @@ export default function UserContextProvider({
       setUser(prev => ({...prev, displayName: displayName, email: email}));
   };
 
-  const updatePassword = async (password:string) => {
-    await updateMainUser({ variables: { password, uuid: user.uuid  } });
+  const updatePassword = async (newPassword:string, oldPassword: string) => {
+    await changePassword({ variables: { newPassword, oldPassword } });
   };
 
   const logout = () => {

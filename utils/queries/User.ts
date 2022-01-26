@@ -28,9 +28,15 @@ export const LOGIN_USER = gql`
 `;
 
 export const UPDATE_MAIN_USER = gql`
-    mutation updateMainUser($displayName: String, $email: String, $password: String, $uuid: String!){
-        updateUser(displayName: $displayName, email: $email, password: $password, uuid: $uuid){
+    mutation updateMainUser($displayName: String, $email: String, $uuid: String!){
+        updateUser(displayName: $displayName, email: $email uuid: $uuid){
             uuid
         }
+    }
+`;
+
+export const CHANGE_PASSWORD = gql`
+    mutation ChangePassword($newPassword: String!, $oldPassword: String!){
+        changePassword(newPassword: $newPassword, oldPassword: $oldPassword)
     }
 `;
