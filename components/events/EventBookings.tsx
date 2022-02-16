@@ -25,9 +25,9 @@ export default function EventBookings({event}){
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Personne</TableCell>
-                                <TableCell>Tarif</TableCell>
-                                <TableCell>Remboursé ?</TableCell>
+                                <TableCell className="font-bold">Personne</TableCell>
+                                <TableCell className="font-bold">Tarif</TableCell>
+                                <TableCell className="font-bold">Remboursé ?</TableCell>
                                 <TableCell/>
                             </TableRow>
                         </TableHead>
@@ -46,8 +46,8 @@ export default function EventBookings({event}){
                                             {booking.refund ? displayDate(booking.refundedAt) : ''}
                                         </TableCell>
                                         <TableCell>
-                                            {!booking.refund && (
-                                                <Tooltip title={isRefunding ? 'Remboursement...' : 'Rembourser'} placement="top">
+                                            {(!booking.refund && !isRefunding) && (
+                                                <Tooltip title="Rembourser" placement="top">
                                                 <span>
                                                     <IconButton
                                                         disabled={booking.refund || isRefunding}
@@ -58,6 +58,7 @@ export default function EventBookings({event}){
                                                 </span>
                                                 </Tooltip>
                                             )}
+                                            {isRefunding && 'Remboursement...'}
                                         </TableCell>
                                     </TableRow>
                                 );

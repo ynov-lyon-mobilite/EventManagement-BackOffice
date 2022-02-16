@@ -25,7 +25,7 @@ export default function Event(){
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     const [canceling, setCanceling] = useState(false);
     const [cancelError, setCancelError] = useState(null);
-    const [tabValue, setTabValue] = useState(0);
+    const [tabValue, setTabValue] = useState(router.asPath.includes('#bookings') ? 1 : 0);
 
     if(loading) return (<Layout><CircularProgress/></Layout>);
 
@@ -105,8 +105,14 @@ export default function Event(){
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={tabValue} onChange={handleChangeTab} aria-label="event tabs">
-                        <Tab icon={<ManageAccountsIcon />} iconPosition="start" label="Tarifs" {...a11yProps(0)} />
-                        <Tab icon={<VpnKeyIcon />} iconPosition="start" label="Réservations" {...a11yProps(1)} />
+                        <Tab component="a" href="#prices"
+                             icon={<ManageAccountsIcon />}
+                             iconPosition="start"
+                             label="Tarifs" {...a11yProps(0)} />
+                        <Tab component="a" href="#bookings"
+                             icon={<VpnKeyIcon />}
+                             iconPosition="start"
+                             label="Réservations" {...a11yProps(1)} />
                     </Tabs>
                 </Box>
                 <TabPanel value={tabValue} id="event" index={0}>

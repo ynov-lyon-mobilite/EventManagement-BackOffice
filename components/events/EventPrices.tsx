@@ -90,8 +90,8 @@ export default function EventPrices({event}){
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Prix</TableCell>
-                                <TableCell>Description</TableCell>
+                                <TableCell className="font-bold">Prix</TableCell>
+                                <TableCell className="font-bold">Description</TableCell>
                                 <TableCell/>
                             </TableRow>
                         </TableHead>
