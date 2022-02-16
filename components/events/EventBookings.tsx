@@ -1,7 +1,20 @@
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material";
 import {displayDate} from "../../utils/date";
+import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import {useState} from "react";
 
 export default function EventBookings({event}){
+    const [refundingBookings, setRefundingBookings] = useState([]);
+
+    const onRefund = (booking) => {
+        //TODO : refund mutation here
+        console.log('refunding ' + booking.user.uuid);
+        setRefundingBookings(prev => [...prev, booking.uuid]);
+        setTimeout(() => {
+            setRefundingBookings(prev => prev.filter(b => b !== booking.uuid));
+        },2000)
+    };
+
     return (
         <div>
             <div className="mt-2">
@@ -17,20 +30,36 @@ export default function EventBookings({event}){
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {event.bookings.map(booking => (
-                                <TableRow key={booking.uuid}>
-                                    <TableCell>
-                                        {booking.user.displayName}
-                                    </TableCell>
-                                    <TableCell>
-                                        {booking.price}
-                                    </TableCell>
-                                    <TableCell>
-                                        {booking.refund ? displayDate(booking.refundedAt) : ''}
-                                    </TableCell>
-                                    <TableCell/>
-                                </TableRow>
-                            ))}
+                            {event.bookings.map(booking => {
+                                const isRefunding = refundingBookings.includes(booking.uuid);
+                                return (
+                                    <TableRow key={booking.uuid}>
+                                        <TableCell>
+                                            {booking.user.displayName}
+                                        </TableCell>
+                                        <TableCell>
+                                            {booking.price}
+                                        </TableCell>
+                                        <TableCell>
+                                            {booking.refund ? displayDate(booking.refundedAt) : ''}
+                                        </TableCell>
+                                        <TableCell>
+                                            {!booking.refund && (
+                                                <Tooltip title={isRefunding ? 'Remboursement...' : 'Rembourser'} placement="top">
+                                                <span>
+                                                    <IconButton
+                                                        disabled={booking.refund || isRefunding}
+                                                        onClick={() => onRefund(booking)}
+                                                    >
+                                                    <SettingsBackupRestoreIcon />
+                                                </IconButton>
+                                                </span>
+                                                </Tooltip>
+                                            )}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
                             {event.bookings.length === 0 && (
                                 <TableRow style={{height: 53}}>
                                     <TableCell className="text-center" colSpan={3} style={{fontStyle: 'italic'}}>
