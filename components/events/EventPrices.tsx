@@ -120,7 +120,9 @@ export default function EventPrices({event}){
                             ))}
                             {event.prices.length === 0 && (
                                 <TableRow style={{height: 53}}>
-                                    <TableCell colSpan={3}>Aucun tarif</TableCell>
+                                    <TableCell className="text-center" style={{fontStyle: 'italic'}} colSpan={3}>
+                                        Aucun tarif
+                                    </TableCell>
                                 </TableRow>
                             )}
                         </TableBody>

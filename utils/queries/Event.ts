@@ -12,6 +12,7 @@ export const FETCH_EVENTS = gql`
                     nbPlaces
                     participantsCount
                     prices{amount, uuid, description}
+                    bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
                     startDate
                     title
                     uuid
@@ -31,6 +32,7 @@ export const CREATE_EVENT = gql`
             nbPlaces
             participantsCount
             prices{amount, uuid, description}
+            bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
             startDate
             title
             uuid
@@ -48,6 +50,7 @@ export const UPDATE_EVENT = gql`
             nbPlaces
             participantsCount
             prices{amount, uuid, description}
+            bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
             startDate
             title
             uuid
@@ -65,6 +68,7 @@ export const DELETE_EVENT = gql`
             nbPlaces
             participantsCount
             prices{amount, uuid, description}
+            bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
             startDate
             title
             uuid

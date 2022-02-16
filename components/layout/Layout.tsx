@@ -81,12 +81,6 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
                     </ListItemIcon>
                     <ListItemText primary="Evènements" />
                 </ListItem>
-                <ListItem button key="bookings" onClick={() => {goTo('/bookings')}}>
-                    <ListItemIcon>
-                        <BookmarkAddIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Réservations" />
-                </ListItem>
             </List>
             <Divider />
             <List>

@@ -16,6 +16,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import {a11yProps} from "../../../utils/other";
 import TabPanel from "../../../components/layout/TabPanel";
+import EventBookings from "../../../components/events/EventBookings";
 
 export default function Event(){
     const {events, loading, deleteEvent} = useContext(EventContext);
@@ -112,7 +113,7 @@ export default function Event(){
                     <EventPrices event={event}/>
                 </TabPanel>
                 <TabPanel value={tabValue} id="event" index={1}>
-                    liste des réservations
+                    <EventBookings event={event}/>
                 </TabPanel>
             </Box>
         </Layout>
