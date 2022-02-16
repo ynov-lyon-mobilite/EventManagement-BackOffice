@@ -93,3 +93,15 @@ export const DELETE_PRICE = gql`
         }
     }
 `;
+
+export const REFUND_BOOKING = gql`
+    mutation RefundBooking($bookingUuid: String!){
+        booking: refundBooking(bookingUuid: $bookingUuid){
+            uuid, 
+            price, 
+            user{displayName, email, uuid}, 
+            refunded, 
+            refundedAt
+        }
+    }
+`;

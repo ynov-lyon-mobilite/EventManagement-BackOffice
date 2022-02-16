@@ -82,6 +82,7 @@ export type Mutation = {
   /** Pay to join the event */
   joinEvent: Scalars['String'];
   login: UserAuth;
+  refundBooking: Booking;
   register: UserAuth;
   restoreEventCategory: EventCategory;
   testSub: Scalars['Boolean'];
@@ -160,6 +161,11 @@ export type MutationJoinEventArgs = {
 export type MutationLoginArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRefundBookingArgs = {
+  bookingUuid: Scalars['String'];
 };
 
 
@@ -378,6 +384,13 @@ export type DeletePriceMutationVariables = Exact<{
 
 
 export type DeletePriceMutation = { price: { uuid: string } };
+
+export type RefundBookingMutationVariables = Exact<{
+  bookingUuid: Scalars['String'];
+}>;
+
+
+export type RefundBookingMutation = { booking: { uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } } };
 
 export type FetchCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 

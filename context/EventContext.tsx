@@ -7,7 +7,7 @@ import {
     CreateNewPriceMutationVariables, DeleteEventMutation, DeleteEventMutationVariables,
     DeletePriceMutation,
     DeletePriceMutationVariables,
-    FetchEventsQuery,
+    FetchEventsQuery, RefundBookingMutation, RefundBookingMutationVariables,
     UpdateEventMutation,
     UpdateEventMutationVariables
 } from "../src/__graphql__/__generated__";
@@ -16,7 +16,7 @@ import {
     CREATE_PRICE,
     DELETE_EVENT,
     DELETE_PRICE,
-    FETCH_EVENTS,
+    FETCH_EVENTS, REFUND_BOOKING,
     UPDATE_EVENT
 } from "../utils/queries/Event";
 
@@ -30,6 +30,7 @@ type EventContextType = {
     deleteEvent: (uuid) => Promise<void>,
     createPrice: (amount, description, eventUuid) => Promise<void>,
     deletePrice: (uuid, eventUuid) => Promise<void>,
+    refundBooking: (booking, event) => Promise<void>,
 };
 
 export const EventContext = createContext<EventContextType>(undefined);
@@ -41,6 +42,7 @@ export default function EventContextProvider({children}){
     const [deleteEvent] = useMutation<DeleteEventMutation, DeleteEventMutationVariables>(DELETE_EVENT);
     const [createPrice] = useMutation<CreateNewPriceMutation, CreateNewPriceMutationVariables>(CREATE_PRICE);
     const [deletePrice] = useMutation<DeletePriceMutation, DeletePriceMutationVariables>(DELETE_PRICE);
+    const [refundBooking] = useMutation<RefundBookingMutation, RefundBookingMutationVariables>(REFUND_BOOKING);
     const [events, setEvents] = useState([]);
 
     useEffect(() => {
@@ -91,6 +93,20 @@ export default function EventContextProvider({children}){
         }));
     }
 
+    const handleRefundBooking = async (booking, event) => {
+        const { data } = await refundBooking({variables: { bookingUuid: booking.uuid }});
+        setEvents(prev => prev.map(ev => {
+            if(ev.uuid === event.uuid) return {
+                ...ev,
+                bookings: ev.bookings.map(b => {
+                    if(b.uuid === booking.uuid) return data.booking;
+                    return b;
+                })
+            };
+            return ev;
+        }));
+    };
+
     return (
         <EventContext.Provider value={{
             events,
@@ -100,7 +116,8 @@ export default function EventContextProvider({children}){
             updateEvent: handleUpdateEvent,
             deleteEvent: handleDeleteEvent,
             createPrice: handleNewPrice,
-            deletePrice: handleDeletePrice
+            deletePrice: handleDeletePrice,
+            refundBooking: handleRefundBooking
         }}>
             {children}
         </EventContext.Provider>

@@ -1,20 +1,23 @@
 import {IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material";
 import {displayDate} from "../../utils/date";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
-import {useState} from "react";
+import {useContext, useState} from "react";
 import ConfirmDialog from "../layout/ConfirmDialog";
+import {EventContext} from "../../context/EventContext";
 
 export default function EventBookings({event}){
+    const {refundBooking} = useContext(EventContext)
     const [refundingBookings, setRefundingBookings] = useState([]);
     const [confirmRefundBooking, setConfirmRefundBooking] = useState(null);
 
-    const onRefund = (booking) => {
-        //TODO : refund mutation here
-        console.log('refunding ' + booking.user.uuid);
+    const onRefund = async (booking) => {
         setRefundingBookings(prev => [...prev, booking.uuid]);
-        setTimeout(() => {
+        try{
+            await refundBooking(booking, event);
             setRefundingBookings(prev => prev.filter(b => b !== booking.uuid));
-        },2000)
+        }catch(e){
+            console.error(e);
+        }
     };
 
     return (
@@ -43,14 +46,14 @@ export default function EventBookings({event}){
                                             {booking.price}
                                         </TableCell>
                                         <TableCell>
-                                            {booking.refund ? displayDate(booking.refundedAt) : ''}
+                                            {booking.refunded ? displayDate(booking.refundedAt, true) : ''}
                                         </TableCell>
                                         <TableCell>
-                                            {(!booking.refund && !isRefunding) && (
+                                            {(!booking.refunded && !isRefunding) && (
                                                 <Tooltip title="Rembourser" placement="top">
                                                 <span>
                                                     <IconButton
-                                                        disabled={booking.refund || isRefunding}
+                                                        disabled={booking.refunded || isRefunding}
                                                         onClick={() => setConfirmRefundBooking(booking)}
                                                     >
                                                     <SettingsBackupRestoreIcon />
