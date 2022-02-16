@@ -2,9 +2,11 @@ import {IconButton, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import {displayDate} from "../../utils/date";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import {useState} from "react";
+import ConfirmDialog from "../layout/ConfirmDialog";
 
 export default function EventBookings({event}){
     const [refundingBookings, setRefundingBookings] = useState([]);
+    const [confirmRefundBooking, setConfirmRefundBooking] = useState(null);
 
     const onRefund = (booking) => {
         //TODO : refund mutation here
@@ -49,7 +51,7 @@ export default function EventBookings({event}){
                                                 <span>
                                                     <IconButton
                                                         disabled={booking.refund || isRefunding}
-                                                        onClick={() => onRefund(booking)}
+                                                        onClick={() => setConfirmRefundBooking(booking)}
                                                     >
                                                     <SettingsBackupRestoreIcon />
                                                 </IconButton>
@@ -71,6 +73,14 @@ export default function EventBookings({event}){
                     </Table>
                 </TableContainer>
             </div>
+            <ConfirmDialog
+                open={confirmRefundBooking !== null}
+                title="Rembourser l'évènement"
+                onConfirm={() => onRefund(confirmRefundBooking)}
+                onClose={() => setConfirmRefundBooking(null)}
+            >Confirmez-vous le remboursement de l'évènement pour {' '}
+                {confirmRefundBooking !== null ? confirmRefundBooking.user.displayName : ''} ?
+            </ConfirmDialog>
         </div>
     );
 }
