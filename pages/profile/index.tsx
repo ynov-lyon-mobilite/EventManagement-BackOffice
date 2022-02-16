@@ -10,9 +10,11 @@ import ProgressLinear from "../../components/progress/ProgressLinear";
 import PasswordForm from "../../components/profile/PasswordForm";
 import {a11yProps} from "../../utils/other";
 import TabPanel from "../../components/layout/TabPanel";
+import {useRouter} from "next/router";
 
 export default function Profile() {
-    const [value, setValue] = useState(0);
+    const router = useRouter();
+    const [value, setValue] = useState(router.asPath.includes('#password') ? 1 : 0);
     const [openAlert, setOpenAlert] = useState(false);
     const [alertText, setAlertText] = useState("Opération effectuée");
     const alertTimeOut = 3000;
@@ -44,8 +46,14 @@ export default function Profile() {
             <Box sx={{ width: '100%' }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} aria-label="profile tabs">
-                        <Tab icon={<ManageAccountsIcon />} iconPosition="start" label="Général" {...a11yProps(0)} />
-                        <Tab icon={<VpnKeyIcon />} iconPosition="start" label="Mot de passe" {...a11yProps(1)} />
+                        <Tab component="a" href="#general"
+                             icon={<ManageAccountsIcon />}
+                             iconPosition="start"
+                             label="Général" {...a11yProps(0)} />
+                        <Tab component="a" href="#password"
+                             icon={<VpnKeyIcon />}
+                             iconPosition="start"
+                             label="Mot de passe" {...a11yProps(1)} />
                     </Tabs>
                 </Box>
                 <TabPanel value={value} id="profile" index={0}>
