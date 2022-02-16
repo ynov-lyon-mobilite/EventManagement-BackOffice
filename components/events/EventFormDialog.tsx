@@ -47,7 +47,6 @@ export default function EventFormDialog({open, onClose, event = null}){
         e.preventDefault();
         setSubmitting(true);
         setError(null);
-        console.log(newEvent);
         try{
             let resultEvent;
             if(!event){
