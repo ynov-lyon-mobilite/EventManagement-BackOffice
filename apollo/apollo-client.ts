@@ -1,4 +1,5 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import {createUploadLink} from "apollo-upload-client"
 import { setContext } from "@apollo/client/link/context";
 
 export const storeToken = (token: string) => {
@@ -26,7 +27,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: "https://yvent-api.herokuapp.com/api/graphql",
 });
 

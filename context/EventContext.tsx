@@ -25,8 +25,8 @@ type EventContextType = {
     events : FetchEventsQuery["events"]["edges"]["node"] | null,
     loading: boolean,
     fetchEvents: (page: number, take: number) => Promise<void>,
-    createEvent: (categoryUuid, title, startDate, endDate, description, nbPlaces) => Promise<void>,
-    updateEvent: (categoryUuid, title, startDate, endDate, uuid, description, nbPlaces) => Promise<UpdateEventMutation["event"]>,
+    createEvent: (categoryUuid, title, startDate, endDate, image, description, nbPlaces) => Promise<void>,
+    updateEvent: (categoryUuid, title, startDate, endDate, image, uuid, description, nbPlaces) => Promise<UpdateEventMutation["event"]>,
     deleteEvent: (uuid) => Promise<void>,
     createPrice: (amount, description, eventUuid) => Promise<void>,
     deletePrice: (uuid, eventUuid) => Promise<void>,
@@ -55,13 +55,13 @@ export default function EventContextProvider({children}){
         await refetch({variables: {page, take}});
     };
 
-    const handleCreateEvent = async (categoryUuid, title, startDate, endDate, description, nbPlaces = 0) => {
-        const { data } = await createEvent({ variables: { categoryUuid, title, startDate, endDate, description, nbPlaces } });
+    const handleCreateEvent = async (categoryUuid, title, startDate, endDate, image, description, nbPlaces = 0) => {
+        const { data } = await createEvent({ variables: { categoryUuid, title, startDate, endDate, image, description, nbPlaces } });
         setEvents(prev => [...prev, data.event]);
     };
 
-    const handleUpdateEvent = async (categoryUuid, title, startDate, endDate, uuid, description, nbPlaces = 0) => {
-        const { data } = await updateEvent({ variables: { categoryUuid, title, startDate, endDate, uuid, description, nbPlaces } });
+    const handleUpdateEvent = async (categoryUuid, title, startDate, endDate, image, uuid, description, nbPlaces = 0) => {
+        const { data } = await updateEvent({ variables: { categoryUuid, title, startDate, endDate, image, uuid, description, nbPlaces } });
         setEvents(prev => prev.map(event => {
             if(event.uuid === uuid) return data.event;
             return event;

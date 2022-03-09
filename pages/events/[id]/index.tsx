@@ -94,6 +94,7 @@ export default function Event(){
                 </table>
                 <div className="ml-2 d-flex flex-1">
                     <img
+                        alt="event image"
                         className="w-full"
                         style={{
                             borderRadius: '10px',

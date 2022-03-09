@@ -43,8 +43,8 @@ export const CREATE_EVENT = gql`
 `;
 
 export const UPDATE_EVENT = gql`
-    mutation UpdateEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $uuid: String!, $endDate: Date, $description: String, $nbPlaces: Int = 0){
-        event: updateEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, uuid: $uuid, endDate: $endDate, description: $description, nbPlaces: $nbPlaces){
+    mutation UpdateEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $uuid: String!, $endDate: Date, $image: Upload, $description: String, $nbPlaces: Int = 0){
+        event: updateEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, uuid: $uuid, endDate: $endDate, image: $image, description: $description, nbPlaces: $nbPlaces){
             category{name, uuid}
             description
             endDate

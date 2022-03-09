@@ -11,6 +11,8 @@ export type Scalars = {
   Float: number;
   CursorID: any;
   Date: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Booking = {
@@ -34,6 +36,7 @@ export type Event = {
   deletedAt?: Maybe<Scalars['Date']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
+  image?: Maybe<Scalars['String']>;
   nbPlaces: Scalars['Int'];
   participants: UserConnection;
   participantsCount: Scalars['Int'];
@@ -68,6 +71,12 @@ export type EventNode = {
   node: Event;
 };
 
+export type File = {
+  encoding: Scalars['String'];
+  filename: Scalars['String'];
+  mimetype: Scalars['String'];
+};
+
 export type Mutation = {
   changePassword: Scalars['Boolean'];
   createBooking: Booking;
@@ -86,6 +95,7 @@ export type Mutation = {
   register: UserAuth;
   restoreEventCategory: EventCategory;
   testSub: Scalars['Boolean'];
+  testUpload: Scalars['String'];
   updateEvent: Event;
   updateEventCategory: EventCategory;
   updateUser: User;
@@ -107,6 +117,7 @@ export type MutationCreateEventArgs = {
   categoryUuid: Scalars['String'];
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
+  image?: Maybe<Scalars['Upload']>;
   nbPlaces?: Maybe<Scalars['Int']>;
   startDate: Scalars['Date'];
   title: Scalars['String'];
@@ -181,10 +192,16 @@ export type MutationRestoreEventCategoryArgs = {
 };
 
 
+export type MutationTestUploadArgs = {
+  file: Scalars['Upload'];
+};
+
+
 export type MutationUpdateEventArgs = {
   categoryUuid?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   endDate?: Maybe<Scalars['Date']>;
+  image?: Maybe<Scalars['Upload']>;
   nbPlaces?: Maybe<Scalars['Int']>;
   startDate?: Maybe<Scalars['Date']>;
   title?: Maybe<Scalars['String']>;
@@ -335,19 +352,20 @@ export type FetchEventsQueryVariables = Exact<{
 }>;
 
 
-export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } }> } };
+export type FetchEventsQuery = { events: { edges: Array<{ node: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, image?: string | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } }> } };
 
 export type CreateNewEventMutationVariables = Exact<{
   categoryUuid: Scalars['String'];
   title: Scalars['String'];
   startDate: Scalars['Date'];
   endDate?: Maybe<Scalars['Date']>;
+  image?: Maybe<Scalars['Upload']>;
   description?: Maybe<Scalars['String']>;
   nbPlaces?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type CreateNewEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } };
+export type CreateNewEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, image?: string | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } };
 
 export type UpdateEventMutationVariables = Exact<{
   categoryUuid: Scalars['String'];
@@ -355,19 +373,20 @@ export type UpdateEventMutationVariables = Exact<{
   startDate: Scalars['Date'];
   uuid: Scalars['String'];
   endDate?: Maybe<Scalars['Date']>;
+  image?: Maybe<Scalars['Upload']>;
   description?: Maybe<Scalars['String']>;
   nbPlaces?: Maybe<Scalars['Int']>;
 }>;
 
 
-export type UpdateEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } };
+export type UpdateEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, image?: string | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } };
 
 export type DeleteEventMutationVariables = Exact<{
   uuid: Scalars['String'];
 }>;
 
 
-export type DeleteEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } };
+export type DeleteEventMutation = { event: { description?: string | null | undefined, endDate?: any | null | undefined, deletedAt?: any | null | undefined, nbPlaces: number, image?: string | null | undefined, participantsCount: number, startDate: any, title: string, uuid: string, category: { name: string, uuid: string }, prices: Array<{ amount: number, uuid: string, description: string }>, bookings: Array<{ uuid: string, price?: number | null | undefined, refunded: boolean, refundedAt?: any | null | undefined, user: { displayName: string, email: string, uuid: string } }> } };
 
 export type CreateNewPriceMutationVariables = Exact<{
   amount: Scalars['Float'];

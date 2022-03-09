@@ -4,16 +4,17 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl,
+    FormControl, IconButton,
     InputLabel, MenuItem, Select,
     TextField
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
-import {useContext, useEffect, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {LoadingButton} from "@mui/lab";
 import AddIcon from '@mui/icons-material/Add';
 import {CategoryContext} from "../../context/CategoryContext";
 import {EventContext} from "../../context/EventContext";
+import ClearIcon from '@mui/icons-material/Clear';
 
 const INITIAL_EVENT = {
     categoryUuid: null,
@@ -22,6 +23,7 @@ const INITIAL_EVENT = {
     description: null,
     startDate: null,
     endDate: null,
+    image: null,
 };
 
 const convertEventToForm = (oneEvent) => ({
@@ -37,6 +39,7 @@ export default function EventFormDialog({open, onClose, event = null}){
     const [error, setError] = useState(null);
     const [submitting, setSubmitting] = useState(null);
     const [newEvent, setNewEvent] = useState(INITIAL_EVENT);
+    const inputFileRef = useRef<HTMLInputElement|null>(null);
 
     useEffect(() => {
         if(event) setNewEvent(convertEventToForm(event))
@@ -50,10 +53,10 @@ export default function EventFormDialog({open, onClose, event = null}){
         try{
             let resultEvent;
             if(!event){
-                await createEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, newEvent.description, parseInt(newEvent.nbPlaces));
+                await createEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, newEvent.image, newEvent.description, parseInt(newEvent.nbPlaces));
                 resultEvent = INITIAL_EVENT;
             }else{
-                resultEvent = await updateEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, event.uuid, newEvent.description, parseInt(newEvent.nbPlaces));
+                resultEvent = await updateEvent(newEvent.categoryUuid, newEvent.title, newEvent.startDate, newEvent.endDate, newEvent.image, event.uuid, newEvent.description, parseInt(newEvent.nbPlaces));
                 resultEvent = convertEventToForm(resultEvent);
             }
             onClose();
@@ -141,6 +144,19 @@ export default function EventFormDialog({open, onClose, event = null}){
                         value={newEvent.description ?? ''}
                         onChange={handleChange('description')}
                     />
+                    <input
+                        type="file"
+                        ref={inputFileRef}
+                        onChange={e => setNewEvent(prev => ({...prev, image: e.target.files[0]}))}
+                    />
+                    {newEvent.image && (
+                        <IconButton onClick={() => {
+                            inputFileRef.current.value = "";
+                            setNewEvent(prev => ({...prev, image: null}))
+                        }}>
+                            <ClearIcon/>
+                        </IconButton>
+                    )}
                     {error && <div className="mt-2 error">{error}</div>}
                 </DialogContent>
                 <DialogActions>
