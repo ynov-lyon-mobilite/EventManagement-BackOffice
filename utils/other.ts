@@ -8,3 +8,7 @@ export function a11yProps(index: number) {
         'aria-controls': `tabpanel-${index}`,
     };
 }
+
+export function isValueString(value){
+    return (typeof value === 'string' || value instanceof String)
+}

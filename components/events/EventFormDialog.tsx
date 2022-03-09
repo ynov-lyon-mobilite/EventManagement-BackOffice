@@ -15,6 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import {CategoryContext} from "../../context/CategoryContext";
 import {EventContext} from "../../context/EventContext";
 import ClearIcon from '@mui/icons-material/Clear';
+import {isValueString} from "../../utils/other";
 
 const INITIAL_EVENT = {
     categoryUuid: null,
@@ -28,6 +29,7 @@ const INITIAL_EVENT = {
 
 const convertEventToForm = (oneEvent) => ({
     ...oneEvent,
+    image: (!oneEvent.image || isValueString(oneEvent.image)) ? null : oneEvent.image,
     categoryUuid: oneEvent.category.uuid,
     startDate: oneEvent.startDate.substring(0,10),
     endDate: oneEvent.endDate.substring(0,10)
@@ -45,6 +47,10 @@ export default function EventFormDialog({open, onClose, event = null}){
         if(event) setNewEvent(convertEventToForm(event))
         else setNewEvent(INITIAL_EVENT);
     }, [event])
+
+    useEffect(() => {
+        setNewEvent(prev => ({...prev, nbPlaces: Math.abs(parseInt(prev.nbPlaces)).toString()}))
+    },[newEvent.nbPlaces])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -108,6 +114,7 @@ export default function EventFormDialog({open, onClose, event = null}){
                             sx={{ flex:'1' }}
                             label="Nombre de place max"
                             required
+                            InputProps={{ inputProps: { min: 0} }}
                             type="number"
                             margin="normal"
                             value={newEvent.nbPlaces ?? ''}
