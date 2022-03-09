@@ -10,6 +10,7 @@ export const FETCH_EVENTS = gql`
                     endDate
                     deletedAt
                     nbPlaces
+                    image
                     participantsCount
                     prices{amount, uuid, description}
                     bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
@@ -23,13 +24,14 @@ export const FETCH_EVENTS = gql`
 `;
 
 export const CREATE_EVENT = gql`
-    mutation CreateNewEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $endDate: Date, $description: String, $nbPlaces: Int = 0){
-        event: createEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, endDate: $endDate, description: $description, nbPlaces: $nbPlaces){
+    mutation CreateNewEvent($categoryUuid: String!, $title: String!, $startDate: Date!, $endDate: Date, $image: Upload, $description: String, $nbPlaces: Int = 0){
+        event: createEvent(categoryUuid: $categoryUuid, title: $title, startDate: $startDate, endDate: $endDate, image: $image, description: $description, nbPlaces: $nbPlaces){
             category{name, uuid}
             description
             endDate
             deletedAt
             nbPlaces
+            image
             participantsCount
             prices{amount, uuid, description}
             bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
@@ -48,6 +50,7 @@ export const UPDATE_EVENT = gql`
             endDate
             deletedAt
             nbPlaces
+            image
             participantsCount
             prices{amount, uuid, description}
             bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}
@@ -66,6 +69,7 @@ export const DELETE_EVENT = gql`
             endDate
             deletedAt
             nbPlaces
+            image
             participantsCount
             prices{amount, uuid, description}
             bookings{uuid, price, user{displayName, email, uuid}, refunded, refundedAt}

@@ -6,8 +6,8 @@ import {NextSeo} from "next-seo";
 import {Fab} from "@mui/material";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import EventIcon from '@mui/icons-material/Event';
-import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
 import {useRouter} from "next/router";
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 export default function Home() {
   const { user, loading } = useContext(UserContext);
@@ -29,13 +29,13 @@ export default function Home() {
                       <ManageAccountsIcon sx={{ mr: 1 }} />
                       Mon profil
                   </Fab>
+                  <Fab variant="extended" className="m-2 font-bold" onClick={() => {router.push('/categories')}}>
+                      <ListAltIcon sx={{ mr: 1 }} />
+                      Catégories
+                  </Fab>
                   <Fab variant="extended" className="m-2 font-bold" onClick={() => {router.push('/events')}}>
                       <EventIcon sx={{ mr: 1 }} />
                       Evènements
-                  </Fab>
-                  <Fab variant="extended" className="m-2 font-bold" onClick={() => {router.push('/bookings')}}>
-                      <BookmarkAddIcon sx={{ mr: 1 }} />
-                      Réservations
                   </Fab>
               </div>
           </div>
