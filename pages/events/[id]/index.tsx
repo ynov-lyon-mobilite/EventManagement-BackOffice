@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import Layout from "../../../components/layout/Layout";
 import {SyntheticEvent, useContext, useState} from "react";
 import {EventContext} from "../../../context/EventContext";
-import {Box, Button, Chip, CircularProgress, Divider, Tab, Tabs} from "@mui/material";
+import {Avatar, Box, Button, Chip, CircularProgress, Divider, Tab, Tabs} from "@mui/material";
 import {displayDate} from "../../../utils/date";
 import EditIcon from '@mui/icons-material/Edit';
 import EventFormDialog from "../../../components/events/EventFormDialog";
@@ -17,6 +17,7 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import {a11yProps} from "../../../utils/other";
 import TabPanel from "../../../components/layout/TabPanel";
 import EventBookings from "../../../components/events/EventBookings";
+import PersonIcon from '@mui/icons-material/Person';
 
 export default function Event(){
     const {events, loading, deleteEvent} = useContext(EventContext);
@@ -78,18 +79,31 @@ export default function Event(){
                 )}
             </div>
             {cancelError && (<div className="error">{cancelError}</div>)}
-            <table className="mt-2">
-                <tbody>
-                <tr><td className="font-bold">ID</td><td>{event.uuid}</td></tr>
-                <tr><td className="font-bold">Intitulé</td><td>{event.title}</td></tr>
-                <tr><td className="font-bold">Catégorie</td><td>{event.category.name}</td></tr>
-                <tr><td className="font-bold">Début</td><td>{displayDate(event.startDate)}</td></tr>
-                <tr><td className="font-bold">Fin</td><td>{event.endDate ? displayDate(event.endDate) : 'Non définie' }</td></tr>
-                <tr><td className="font-bold">Nb max de places</td><td>{event.nbPlaces}</td></tr>
-                <tr><td className="font-bold">Nombre de participants</td><td>{event.participantsCount}</td></tr>
-                <tr><td className="font-bold">Description</td><td>{event.description ?? 'Aucune description'}</td></tr>
-                </tbody>
-            </table>
+            <div className="d-flex mt-2">
+                <table>
+                    <tbody>
+                    <tr><td className="font-bold">ID</td><td>{event.uuid}</td></tr>
+                    <tr><td className="font-bold">Intitulé</td><td>{event.title}</td></tr>
+                    <tr><td className="font-bold">Catégorie</td><td>{event.category.name}</td></tr>
+                    <tr><td className="font-bold">Début</td><td>{displayDate(event.startDate)}</td></tr>
+                    <tr><td className="font-bold">Fin</td><td>{event.endDate ? displayDate(event.endDate) : 'Non définie' }</td></tr>
+                    <tr><td className="font-bold">Nb max de places</td><td>{event.nbPlaces}</td></tr>
+                    <tr><td className="font-bold">Nombre de participants</td><td>{event.participantsCount}</td></tr>
+                    <tr><td className="font-bold">Description</td><td>{event.description ?? 'Aucune description'}</td></tr>
+                    </tbody>
+                </table>
+                <div className="ml-2 d-flex flex-1">
+                    <img
+                        className="w-full"
+                        style={{
+                            borderRadius: '10px',
+                            boxShadow: "0 0 5px rgba(0,0,0,0.5)",
+                            maxHeight: '300px',
+                            objectFit: 'cover'
+                        }}
+                        src={event.image ?? "/default.jpg"}/>
+                </div>
+            </div>
             <EventFormDialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}

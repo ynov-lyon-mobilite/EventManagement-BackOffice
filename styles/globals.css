@@ -26,6 +26,7 @@ body {
 .flex-wrap{
   flex-wrap: wrap;
 }
+.flex-1{flex: 1;}
 
 .w-full {width: 100%;}
 .h-full {height: 100%;}
