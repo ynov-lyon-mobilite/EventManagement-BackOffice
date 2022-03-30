@@ -67,6 +67,8 @@ body {
 
 .font-bold{ font-weight: bold;}
 
+.overflow-hidden{overflow: hidden;}
+
 .error{
   color: #c11515;
 }
@@ -74,4 +76,11 @@ body {
 .no-decoration-link{
   text-decoration: none;
   cursor: pointer;
+}
+
+.event-image{
+  transition: all 0.15s ease-in-out;
+}
+.event-image:hover{
+  transform: scale(1.05);
 }

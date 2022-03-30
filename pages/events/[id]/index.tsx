@@ -2,7 +2,7 @@ import {useRouter} from "next/router";
 import Layout from "../../../components/layout/Layout";
 import {SyntheticEvent, useContext, useState} from "react";
 import {EventContext} from "../../../context/EventContext";
-import {Avatar, Box, Button, Chip, CircularProgress, Divider, Tab, Tabs} from "@mui/material";
+import {Box, Button, Chip, CircularProgress, Divider, Tab, Tabs} from "@mui/material";
 import {displayDate} from "../../../utils/date";
 import EditIcon from '@mui/icons-material/Edit';
 import EventFormDialog from "../../../components/events/EventFormDialog";
@@ -17,7 +17,6 @@ import VpnKeyIcon from "@mui/icons-material/VpnKey";
 import {a11yProps} from "../../../utils/other";
 import TabPanel from "../../../components/layout/TabPanel";
 import EventBookings from "../../../components/events/EventBookings";
-import PersonIcon from '@mui/icons-material/Person';
 
 export default function Event(){
     const {events, loading, deleteEvent} = useContext(EventContext);
@@ -92,13 +91,14 @@ export default function Event(){
                     <tr><td className="font-bold">Description</td><td>{event.description ?? 'Aucune description'}</td></tr>
                     </tbody>
                 </table>
-                <div className="ml-2 d-flex flex-1">
+                <div className="ml-2 d-flex flex-1 overflow-hidden" style={{
+                    borderRadius: '10px',
+                    boxShadow: "0 0 5px rgba(0,0,0,0.5)",
+                }}>
                     <img
                         alt="event image"
-                        className="w-full"
+                        className="w-full event-image"
                         style={{
-                            borderRadius: '10px',
-                            boxShadow: "0 0 5px rgba(0,0,0,0.5)",
                             maxHeight: '300px',
                             objectFit: 'cover'
                         }}
