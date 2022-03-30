@@ -116,7 +116,7 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
             (displayCanceled || !event.deletedAt) && (event.title.toLowerCase().includes(loweredSearch) ||
             event.uuid.toLowerCase().includes(loweredSearch) ||
             event.category.name.toLowerCase().includes(loweredSearch))));
-    }, [events, search, displayCanceled])
+    }, [events, search, displayCanceled]);
 
     const handleView = (event) => {
         router.push(`/events/${event.uuid}`);
@@ -167,7 +167,7 @@ export default function EventsTable({events = [], onCreation = () => {}, onEditi
                                         <TableCell align="left">{displayDate(event.endDate)}</TableCell>
                                         <TableCell align="left">{event.participantsCount}</TableCell>
                                         <TableCell align="left">{event.nbPlaces}</TableCell>
-                                        <TableCell align="left">{!!event.deletedAt ? 'annulé' : ''}</TableCell>
+                                        <TableCell align="left" style={{color : !event.deletedAt ? 'transparent' : 'inherit'}}>annulé</TableCell>
                                         <TableCell align="left" className="d-flex">
                                             <Tooltip title="Voir l'évènement">
                                                 <IconButton onClick={(e) => {e.stopPropagation();handleView(event)}}>

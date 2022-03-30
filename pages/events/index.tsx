@@ -18,7 +18,7 @@ export default function Events() {
     const onEditEventClick = (event) => {
         setEditedEvent(event);
         setOpenEventDialog(true);
-    }
+    };
 
     return (
         <Layout>

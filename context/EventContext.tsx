@@ -83,7 +83,7 @@ export default function EventContextProvider({children}){
             if(event.uuid === eventUuid) return {...event, prices: [...event.prices, data.price]};
             return event;
         }));
-    }
+    };
 
     const handleDeletePrice = async(uuid, eventUuid) => {
         await deletePrice({ variables: { uuid } });
@@ -91,7 +91,7 @@ export default function EventContextProvider({children}){
             if(event.uuid === eventUuid) return {...event, prices: event.prices.filter(price => price.uuid !== uuid)};
             return event;
         }));
-    }
+    };
 
     const handleRefundBooking = async (booking, event) => {
         const { data } = await refundBooking({variables: { bookingUuid: booking.uuid }});
