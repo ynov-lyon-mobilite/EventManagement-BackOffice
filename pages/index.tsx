@@ -40,8 +40,8 @@ function HomeLink ({url, link, children, alt = "link-image"}){
             <img className="home-link-image" src={url} alt={alt} style={{
                 objectFit: 'cover'
             }}/>
-            <div className="home-link-text">
-                <div className="m-auto">{children ?? 'Lien'}</div>
+            <div className="home-link-text-container">
+                <div className="m-auto home-link-text">{children ?? 'Lien'}</div>
             </div>
         </div>
     );

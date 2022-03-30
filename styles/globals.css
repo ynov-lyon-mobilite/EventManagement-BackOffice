@@ -101,8 +101,12 @@ body {
   transform: scale(1.1);
 }
 
-.home-link-container:hover > .home-link-text{
+.home-link-container:hover > .home-link-text-container{
   opacity: 1;
+}
+
+.home-link-container:hover > .home-link-text-container .home-link-text{
+  transform: translateY(0);
 }
 
 .home-link-image{
@@ -111,7 +115,7 @@ body {
   transition: all 0.2s ease-in-out;
 }
 
-.home-link-text{
+.home-link-text-container{
   position: absolute;
   top: 0;
   left: 0;
@@ -123,4 +127,9 @@ body {
   transition: all 0.2s ease-in-out;
   display: flex;
   font-size: 2rem;
+}
+
+.home-link-text{
+  transform: translateY(1em);
+  transition: all 0.2s ease-in-out;
 }
