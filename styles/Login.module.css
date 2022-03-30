@@ -1,11 +1,15 @@
 .loginContainer {
   height: 100vh;
   display: flex;
-  background-image: url("/wall-paper.jpg");
+  background-image: url("/wall-paper-party.jpg");
   background-position: center;
   background-size: cover;
 }
 
 .loginSubcontainer {
   margin: auto;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
 }

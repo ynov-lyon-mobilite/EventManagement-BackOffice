@@ -127,6 +127,7 @@ body {
   transition: all 0.2s ease-in-out;
   display: flex;
   font-size: 2rem;
+  font-weight: bold;
 }
 
 .home-link-text{
