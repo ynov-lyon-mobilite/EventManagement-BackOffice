@@ -4,7 +4,7 @@ import {
     TableBody,
     TableCell,
     TableContainer,
-    TableHead,
+    TableHead, TablePagination,
     TableRow,
     TextField,
     Tooltip
@@ -14,13 +14,15 @@ import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore
 import {useContext, useEffect, useState} from "react";
 import ConfirmDialog from "../layout/ConfirmDialog";
 import {EventContext} from "../../context/EventContext";
+import usePagination from "../../hooks/usePagination";
 
 export default function EventBookings({event}){
-    const {refundBooking} = useContext(EventContext)
+    const {refundBooking} = useContext(EventContext);
     const [refundingBookings, setRefundingBookings] = useState([]);
     const [confirmRefundBooking, setConfirmRefundBooking] = useState(null);
     const [displayedBookings, setDisplayedBookings] = useState([]);
     const [searchValue, setSearchValue] = useState('');
+    const {page, rowsPerPage, initialIndex, changeRowsPerPage, changePage} = usePagination(0,5);
 
     const onRefund = async (booking) => {
         setRefundingBookings(prev => [...prev, booking.uuid]);
@@ -74,7 +76,7 @@ export default function EventBookings({event}){
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {displayedBookings.map(booking => {
+                            {displayedBookings.slice(initialIndex, initialIndex + rowsPerPage).map(booking => {
                                 const isRefunding = refundingBookings.includes(booking.uuid);
                                 return (
                                     <TableRow key={booking.uuid}>
@@ -107,7 +109,7 @@ export default function EventBookings({event}){
                             })}
                             {displayedBookings.length === 0 && (
                                 <TableRow style={{height: 53}}>
-                                    <TableCell className="text-center" colSpan={3} style={{fontStyle: 'italic'}}>
+                                    <TableCell className="text-center" colSpan={4} style={{fontStyle: 'italic'}}>
                                         Aucune réservation
                                     </TableCell>
                                 </TableRow>
@@ -115,6 +117,17 @@ export default function EventBookings({event}){
                         </TableBody>
                     </Table>
                 </TableContainer>
+                {displayedBookings.length > 0 && (
+                    <TablePagination
+                        rowsPerPageOptions={[5, 10, 25]}
+                        component="div"
+                        count={displayedBookings.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={changePage}
+                        onRowsPerPageChange={changeRowsPerPage}
+                    />
+                )}
             </div>
             <ConfirmDialog
                 open={confirmRefundBooking !== null}
