@@ -1,8 +1,8 @@
 import {gql} from "@apollo/client";
 
 export const FETCH_EVENTS = gql`
-    query FetchEvents($currentPage: Int, $take: Int){
-        events(page: $currentPage, take: $take, deleted: true, includePastEvents: true){
+    query FetchEvents($currentPage: Int){
+        events(page: $currentPage, take: 50, deleted: true, includePastEvents: true){
             edges{
                 node{
                     category{name, uuid}
