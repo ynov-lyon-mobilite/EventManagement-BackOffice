@@ -79,10 +79,10 @@ body {
 }
 
 .event-image{
-  transition: all 0.15s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .event-image:hover{
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .home-link-container{
