@@ -1,7 +1,17 @@
-import {IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material";
+import {
+    IconButton,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
+    Tooltip
+} from "@mui/material";
 import {displayDate} from "../../utils/date";
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import ConfirmDialog from "../layout/ConfirmDialog";
 import {EventContext} from "../../context/EventContext";
 
@@ -9,6 +19,8 @@ export default function EventBookings({event}){
     const {refundBooking} = useContext(EventContext)
     const [refundingBookings, setRefundingBookings] = useState([]);
     const [confirmRefundBooking, setConfirmRefundBooking] = useState(null);
+    const [displayedBookings, setDisplayedBookings] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
 
     const onRefund = async (booking) => {
         setRefundingBookings(prev => [...prev, booking.uuid]);
@@ -20,10 +32,37 @@ export default function EventBookings({event}){
         }
     };
 
+    useEffect(() => {
+        if(event && event.bookings && event.bookings.length > 0){
+            if(searchValue){
+                const loweredValue = searchValue.toLowerCase();
+                setDisplayedBookings(event.bookings.filter(booking => booking.user.displayName.toLowerCase().includes(loweredValue)));
+            }else{
+                setDisplayedBookings(event.bookings)
+            }
+        } else{
+            setDisplayedBookings([]);
+        }
+    },[searchValue,event]);
+
     return (
         <div>
             <div className="mt-2">
-                {event.bookings.length > 0 && <div>{event.bookings.length} réservations(s)</div>}
+                {event.bookings.length > 0 && (
+                    <div className="d-flex">
+                        <div className="my-auto mr-2">{event.bookings.length} réservations(s) totales</div>
+                        <div>
+                            <TextField
+                                value={searchValue}
+                                onChange={e => setSearchValue(e.target.value)}
+                                type="text"
+                                size="small"
+                                className="mr-2"
+                                placeholder="Rechercher"
+                            />
+                        </div>
+                    </div>
+                )}
                 <TableContainer>
                     <Table>
                         <TableHead>
@@ -35,7 +74,7 @@ export default function EventBookings({event}){
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {event.bookings.map(booking => {
+                            {displayedBookings.map(booking => {
                                 const isRefunding = refundingBookings.includes(booking.uuid);
                                 return (
                                     <TableRow key={booking.uuid}>
@@ -66,7 +105,7 @@ export default function EventBookings({event}){
                                     </TableRow>
                                 );
                             })}
-                            {event.bookings.length === 0 && (
+                            {displayedBookings.length === 0 && (
                                 <TableRow style={{height: 53}}>
                                     <TableCell className="text-center" colSpan={3} style={{fontStyle: 'italic'}}>
                                         Aucune réservation
