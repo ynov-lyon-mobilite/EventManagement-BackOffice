@@ -27,9 +27,10 @@ const drawerWidth = 240;
 
 interface Props {
     window?: () => Window;
+    fullHeight?: boolean
 }
 
-export default function Layout({ children, window }: PropsWithChildren<Props>) {
+export default function Layout({ children, window, fullHeight = false }: PropsWithChildren<Props>) {
     const [mobileOpen, setMobileOpen] = useState(false);
     const {logout} = useContext(UserContext);
     const router = useRouter();
@@ -102,6 +103,14 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
 
     const container = window !== undefined ? () => window().document.body : undefined;
 
+    let mainClasses: any = {
+        flexGrow: 1,
+        p: 2,
+        width: { sm: `calc(100% - ${drawerWidth}px)` },
+    };
+
+    if(fullHeight) mainClasses = {...mainClasses, display: 'flex', height: '100vh', flexDirection: 'column'};
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -160,7 +169,7 @@ export default function Layout({ children, window }: PropsWithChildren<Props>) {
             </Box>
             <Box
                 component="main"
-                sx={{ flexGrow: 1, p: 2, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+                sx={mainClasses}
             >
                 <Toolbar />
                 {pageLoading && <LinearProgress />}

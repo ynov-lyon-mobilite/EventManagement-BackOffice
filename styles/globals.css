@@ -84,3 +84,43 @@ body {
 .event-image:hover{
   transform: scale(1.05);
 }
+
+.home-link-container{
+  position: relative;
+  overflow: hidden;
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin:1em;
+}
+
+.home-link-container:hover > .home-link-image{
+  transform: scale(1.1);
+}
+
+.home-link-container:hover > .home-link-text{
+  opacity: 1;
+}
+
+.home-link-image{
+  width: 100%;
+  height: 100%;
+  transition: all 0.2s ease-in-out;
+}
+
+.home-link-text{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  color: white;
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  font-size: 2rem;
+}

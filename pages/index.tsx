@@ -11,34 +11,38 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 
 export default function Home() {
   const { user, loading } = useContext(UserContext);
-    const router = useRouter();
 
   if (!user && !loading) {
     return <Unauthorized />;
   }
 
   return (
-      <Layout>
+      <Layout fullHeight={true}>
           <NextSeo
               title="Accueil"
               description="Page d'accueil du back-office Yvent"
           />
-          <div className="d-flex">
-              <div className="m-auto d-flex justify-around w-full flex-wrap">
-                  <Fab variant="extended" className="m-2 font-bold" onClick={() => {router.push('/profile')}}>
-                      <ManageAccountsIcon sx={{ mr: 1 }} />
-                      Mon profil
-                  </Fab>
-                  <Fab variant="extended" className="m-2 font-bold" onClick={() => {router.push('/categories')}}>
-                      <ListAltIcon sx={{ mr: 1 }} />
-                      Catégories
-                  </Fab>
-                  <Fab variant="extended" className="m-2 font-bold" onClick={() => {router.push('/events')}}>
-                      <EventIcon sx={{ mr: 1 }} />
-                      Evènements
-                  </Fab>
+          <div className="d-flex flex-1">
+              <div className="d-flex flex-wrap justify-around w-full m-auto">
+                  <HomeLink link="/profile" url="security.jpg" alt="security-image">Profil</HomeLink>
+                  <HomeLink link="/categories" url="categories.webp" alt="categories-image">Catégories</HomeLink>
+                  <HomeLink link="/events" url="events.webp" alt="events-image">Evènements</HomeLink>
               </div>
           </div>
       </Layout>
   );
+}
+
+function HomeLink ({url, link, children, alt = "link-image"}){
+    const router = useRouter();
+    return (
+        <div className="home-link-container" onClick={() => {router.push(link)}}>
+            <img className="home-link-image" src={url} alt={alt} style={{
+                objectFit: 'cover'
+            }}/>
+            <div className="home-link-text">
+                <div className="m-auto">{children ?? 'Lien'}</div>
+            </div>
+        </div>
+    );
 }
